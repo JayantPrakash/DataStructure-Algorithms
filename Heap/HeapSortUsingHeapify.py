@@ -1,10 +1,15 @@
+# Key idea: Track heap ordering and which element is kept at the root.
+# Compute or update the heapify result for the supplied input.
 def heapify(A,n):
     # first non element is n/2 - 1, if n is total no of elements
     for i in range(int(n/2) -1, -1, -1):
         j = 2*i + 1    
+        # Keep processing while `j < n` remains true.
         while (j<n):
+            # Choose this path when `A[j] < A[j + 1]` is true.
             if A[j] < A[j+1]:
                 j += 1
+            # Choose this path when `A[i] < A[j]` is true.
             if A[i] < A[j]:
                 A[i], A[j] = A[j], A[i]
                 i = j    
@@ -13,6 +18,7 @@ def heapify(A,n):
                 break     
     return A
 
+# Compute or update the delete heap result for the supplied input.
 def delete_heap(A,n):
     i = 0
     j = 1
@@ -35,6 +41,7 @@ def delete_heap(A,n):
     return val
 
 
+# Compute or update the heap sort result for the supplied input.
 def heapSort(A):
 
     A = heapify(A,len(A)-1)

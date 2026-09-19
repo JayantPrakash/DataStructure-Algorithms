@@ -1,3 +1,5 @@
+# Key idea: Trace each recursive choice, the base case, and the backtracking step.
+# Group the state and operations used by the Subsets mutable implementation.
 class Solution(object):
     #def __init__(self):
     #    self.result = []
@@ -12,7 +14,9 @@ class Solution(object):
         self.helper(nums, 0, [])
         return self.result
 
+    # Compute or update the helper result for the supplied input.
     def helper(self, S, i, slate):
+        # Choose this path when `i == len(S)` is true.
         if i == len(S):
             self.result.append(slate[:])
             return

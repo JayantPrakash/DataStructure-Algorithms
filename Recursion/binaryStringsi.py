@@ -1,9 +1,13 @@
+# Key idea: Trace each recursive choice, the base case, and the backtracking step.
+# Compute or update the binary stringsi result for the supplied input.
 def binaryStringsi(n):
+    # Choose this path when `n == 1` is true.
     if n == 1:
         return ['0','1']
     else:
         prev = binaryStringsi(n-1)
         result = []
+        # Process each value from `prev`.
         for elem in prev:
             result.append(elem + '0')
             result.append(elem + '1')

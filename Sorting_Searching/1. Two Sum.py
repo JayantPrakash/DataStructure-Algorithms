@@ -1,11 +1,16 @@
+# Key idea: Track complements or pointer movement while avoiding repeated work.
+# Compute or update the two sum result for the supplied input.
 def twoSum(nums,target):
     nums.sort()
     i = 0
     j = len(nums) - 1
 
+    # Keep processing while `i < j` remains true.
     while i < j:
+        # Choose this path when `nums[i] + nums[j] == target` is true.
         if nums[i] + nums[j] == target:
             return [i+1,j+1]
+        # Choose this path when `nums[i] + nums[j] < target` is true.
         elif nums[i] + nums[j] < target:
             i += 1
         else:

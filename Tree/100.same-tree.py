@@ -1,3 +1,4 @@
+# Key idea: Track the current node, the chosen subtree, and the value returned upward.
 """
 Question:
 Given the roots of two binary trees p and q, write a function to 
@@ -10,12 +11,16 @@ are structurally identical, and the nodes have the same value.
 from collections import deque
 
 from build_tree import build_tree
+# Group the state and operations used by the same tree implementation.
 class TreeNode(object):
+    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
+# Group the state and operations used by the same tree implementation.
 class Solution(object):
+    # Compute or update the is same tree result for the supplied input.
     def isSameTree(self, p, q):
         """
         :type p: Optional[TreeNode]
@@ -25,29 +30,37 @@ class Solution(object):
 
         queue = deque([(p,q)])
 
+        # Choose this path when `p is None and q is None` is true.
         if p is None and q is None:
             return True
 
+        # Choose this path when `p is None and q is not None or (p is not None and q is None)` is true.
         if p is None and q is not None or p is not None and q is None:
             return False
     
 
+        # Keep processing while `len(queue) != 0` remains true.
         while len(queue) != 0:
             nodep, nodeq = queue.popleft()
             
+            # Choose this path when `nodep.val != nodeq.val` is true.
             if nodep.val != nodeq.val:
                 return False
 
+            # Choose this path when `nodep.left is not None and nodeq.left is None or (nodep.left is None and...` is true.
             if nodep.left is not None and nodeq.left is None or  nodep.left is None and nodeq.left is not None :  
                 return False   
             
+            # Choose this path when `nodep.right is not None and nodeq.right is None or (nodep.right is None ...` is true.
             if nodep.right is not None and nodeq.right is None or  nodep.right is None and nodeq.right is not None :  
                 return False
                      
             
+            # Choose this path when `nodep.left and nodeq.left` is true.
             if nodep.left and nodeq.left:
                 queue.append((nodep.left, nodeq.left))
 
+            # Choose this path when `nodep.right and nodeq.right` is true.
             if nodep.right and nodeq.right:
                 queue.append((nodep.right, nodeq.right))
         

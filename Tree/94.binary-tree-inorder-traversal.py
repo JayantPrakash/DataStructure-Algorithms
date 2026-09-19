@@ -1,19 +1,26 @@
+# Key idea: Trace the recursive or explicit-stack depth-first traversal and its return values.
 # Definition for a binary tree node.
 from typing import List, Optional
 
+# Group the state and operations used by the binary tree inorder traversal implementation.
 class TreeNode:
+    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
+# Group the state and operations used by the binary tree inorder traversal implementation.
 class Solution:
+    # Compute or update the inorder traversal result for the supplied input.
     def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         result = []
         self.inOrderHelper(root, result)
         return result
     
+    # Compute or update the in order helper result for the supplied input.
     def inOrderHelper(self,node, res):
 
+        # Choose this path when `not node` is true.
         if not node:
             return None
         

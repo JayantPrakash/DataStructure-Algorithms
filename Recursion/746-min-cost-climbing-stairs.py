@@ -1,12 +1,18 @@
+# Key idea: Track how each state reuses results from smaller subproblems.
 from typing import  List
+# Group the state and operations used by the min cost climbing stairs implementation.
 class Solution:
+    # Compute or update the min cost climbing stairs result for the supplied input.
     def minCostClimbingStairs(self, cost: List[int]) -> int:
         len_cost = len(cost)
         cost.append(0)
         min_cost_dict = {}
+        # Compute or update the helper result for the supplied input.
         def helper(i: int) -> int:
+            # Choose this path when `i in min_cost_dict.keys()` is true.
             if i in min_cost_dict.keys():
                 return min_cost_dict[i]
+            # Choose this path when `i <= 1` is true.
             if i <= 1:
                 min_cost_dict[i] = cost[i]
                 return cost[i]

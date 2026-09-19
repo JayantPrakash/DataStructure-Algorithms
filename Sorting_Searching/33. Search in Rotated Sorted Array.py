@@ -1,19 +1,26 @@
+# Key idea: Track the search interval and the condition that discards half of it.
+# Compute or update the binary search rotated result for the supplied input.
 def binary_search_rotated(nums, target):
     # Replace this placeholder return statement with your code
     start = 0
     end = len(nums) - 1
 
+    # Keep processing while `start <= end` remains true.
     while start <= end:
         mid = start + int((end - start)/2)
 
+        # Choose this path when `nums[mid] == target` is true.
         if nums[mid] == target:
             return mid
+        # Choose this path when `nums[mid] < target` is true.
         elif nums[mid] < target:
+            # Choose this path when `nums[end] >= target and nums[mid + 1] < nums[mid]` is true.
             if nums[end] >= target and nums[mid+1] < nums[mid]:
                 start = mid + 1
             else:
                 end = mid - 1
         else:
+            # Choose this path when `nums[start] > target` is true.
             if nums[start] > target:
                 start = mid + 1
             else:

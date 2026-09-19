@@ -1,6 +1,9 @@
+# Key idea: Trace the priority queue as it selects the next shortest path.
 from heapq import heappush,heappop
+# Group the state and operations used by the Dijkstra implementation.
 class Graph:
 
+    # Initialize the state needed by a new instance.
     def __init__(self, vertices):
         self.V = vertices
         self.graph = [ [] for _ in range(vertices)]
@@ -12,25 +15,32 @@ class Graph:
         self.graph[u].append([w, v])
         self.graph[v].append([w, u])
 
+    # Compute or update the dijkstra result for the supplied input.
     def dijkstra(self, source):
         pq = []
         self.captured[0] = 1
+        # Process each value from `self.graph[source]`.
         for cost, node,  in self.graph[source]:
             heappush(pq,(cost,(source,node)))
         self.distance[source] = 0
+        # Keep processing while `len(pq) != 0` remains true.
         while len(pq) != 0:
             cost, (parent,node) = heappop(pq)
+            # Choose this path when `self.captured[node] == 1` is true.
             if self.captured[node] == 1:
                 continue
             self.distance[node]= cost
             self.captured[node] = 1
 
+            # Process each value from `self.graph[node]`.
             for cost, neighbor in self.graph[node]:
+                # Choose this path when `self.captured[neighbor] == -1` is true.
                 if self.captured[neighbor] == -1:
                     heappush(pq,(cost + self.distance[node],(node,neighbor)))
 
         return self.distance
 
+# Run this example only when the file is executed directly.
 if __name__ == '__main__':
     g = Graph(4)
     g.addEdge(0, 1, 10)

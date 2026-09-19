@@ -1,9 +1,12 @@
+# Key idea: Track the sorted prefix while each new value is inserted.
+# Compute or update the insertion sort result for the supplied input.
 def insertionSort(array):
     # Write your code here.
     for i in range(1,len(array)):
 
         curr_elem = array[i]
         j = i - 1
+        # Keep processing while `j >= 0 and curr_elem < array[j]` remains true.
         while j >= 0 and curr_elem < array[j]:
             array[j + 1] = array[j]
             j = j - 1

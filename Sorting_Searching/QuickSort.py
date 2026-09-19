@@ -1,9 +1,13 @@
+# Key idea: Follow pivot placement and the recursive partitions on either side.
 import random
+# Compute or update the quicksort result for the supplied input.
 def quicksort(a):
     return qsort(a,0,len(a)-1)
 
+# Compute or update the qsort result for the supplied input.
 def qsort(l,start,end):
 
+    # Choose this path when `start >= end` is true.
     if start >= end:
         return
 
@@ -13,7 +17,9 @@ def qsort(l,start,end):
     pivot = l[start]
     smaller = start
     bigger = start
+    # Process each value from `range(start + 1, end + 1)`.
     for bigger in range(start+1, end+1):
+        # Choose this path when `l[bigger] <= pivot` is true.
         if l[bigger] <= pivot:
             smaller += 1
             l[smaller],l[bigger] = l[bigger], l[smaller]

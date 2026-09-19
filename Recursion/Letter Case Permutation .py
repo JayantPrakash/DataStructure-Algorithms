@@ -1,6 +1,8 @@
+# Key idea: Trace each recursive choice, the base case, and the backtracking step.
 
 
 
+# Compute or update the letter case permutations result for the supplied input.
 def letter_case_permutations(s):
     """
     Args:
@@ -12,10 +14,13 @@ def letter_case_permutations(s):
 
     result = []
 
+    # Compute or update the lp helper result for the supplied input.
     def lp_helper(s, i, slate):
+        # Choose this path when `i >= len(s)` is true.
         if i >= len(s):
             result.append(slate)
         else:
+            # Choose this path when `s[i].isdigit()` is true.
             if s[i].isdigit():
                 lp_helper(s,i+1,slate + s[i])
             else:

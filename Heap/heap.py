@@ -1,47 +1,61 @@
+# Key idea: Track heap ordering and which element is kept at the root.
+# Group the state and operations used by the heap implementation.
 class MaxHeap:
     arr = []
     maxSize = 0
     heapSize = 0
 
+    # Initialize the state needed by a new instance.
     def __init__(self, maxsize):
         self.maxSize = maxsize
         self.heapSize = 0
         self.arr = [None] * maxsize
 
+    # Compute or update the left result for the supplied input.
     def left(self, i):
         return 2 * i + 1
 
+    # Compute or update the right result for the supplied input.
     def right(self, i):
         return 2 * i + 2
 
+    # Compute or update the parent result for the supplied input.
     def parent(self, i):
         return int((i - 1) / 2)
 
+    # Compute or update the max heapify result for the supplied input.
     def MaxHeapify(self, i):
         l = self.left(i)
         r = self.right(i)
 
         largest = i
 
+        # Choose this path when `self.heapSize == 0 or self.heapSize == 1` is true.
         if self.heapSize == 0 or self.heapSize == 1:
             return
 
+        # Choose this path when `l < self.heapSize and self.arr[l] > self.arr[largest]` is true.
         if l < self.heapSize and self.arr[l] > self.arr[largest]:
             largest = l
 
+        # Choose this path when `r < self.heapSize and self.arr[r] > self.arr[largest]` is true.
         if r < self.heapSize and self.arr[r] > self.arr[largest]:
             largest = r
 
+        # Choose this path when `largest != i` is true.
         if largest != i:
             temp = self.arr[i]
             self.arr[i] = self.arr[largest]
             self.arr[largest] = temp
             self.MaxHeapify(largest)
 
+    # Compute or update the remove max result for the supplied input.
     def removeMax(self):
+        # Choose this path when `self.heapSize == 0` is true.
         if self.heapSize == 0:
             return None
         root = self.arr[0]
+        # Choose this path when `self.heapSize == 1` is true.
         if self.heapSize == 1:
             self.arr[0] = None
             self.heapSize -= 1
@@ -51,7 +65,9 @@ class MaxHeap:
         self.heapSize -= 1
         self.MaxHeapify(0)
 
+    # Compute or update the insert key result for the supplied input.
     def insertKey(self, x):
+        # Choose this path when `self.heapSize == self.maxSize` is true.
         if self.heapSize == self.maxSize:
             return 'Max elem reached'
 
@@ -59,18 +75,22 @@ class MaxHeap:
         i = self.heapSize - 1
         self.arr[i] = x
 
+        # Keep processing while `i != 0 and self.arr[self.parent(i)] < self.arr[i]` remains true.
         while i != 0 and self.arr[self.parent(i)] < self.arr[i]:
             temp = self.arr[self.parent(i)]
             self.arr[self.parent(i)] = self.arr[i]
             self.arr[i] = temp
             i = self.parent(i)
 
+    # Compute or update the cur size result for the supplied input.
     def curSize(self):
         return self.heapSize
 
+    # Compute or update the get max result for the supplied input.
     def getMax(self):
         return self.arr[0]
 
+    # Compute or update the heap sort result for the supplied input.
     def heapSort(self,arr):
         N = self.heapSize
 

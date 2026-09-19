@@ -1,8 +1,10 @@
+# Key idea: Track heap ordering and which element is kept at the root.
 # insert one element in heap
 def insert(A, n):
     i = n
     temp = A[n]
 
+    # Keep processing while `i > 0 and temp > A[int(i / 2)]` remains true.
     while i > 0 and temp > A[int(i / 2)]:
         A[i] = A[int(i / 2)]
         i = int(i / 2)
@@ -11,7 +13,9 @@ def insert(A, n):
     return A
 
 
+# Compute or update the create heap result for the supplied input.
 def createHeap(A):
+    # Process each value from `range(1, len(A))`.
     for i in range(1, len(A)):
         A = insert(A, i)
 

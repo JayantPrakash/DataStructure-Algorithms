@@ -1,8 +1,12 @@
+# Key idea: Trace each recursive choice, the base case, and the backtracking step.
+# Compute or update the binary string i result for the supplied input.
 def binary_string_i(n):
     bs_helper(n, '')
 
 
+# Compute or update the bs helper result for the supplied input.
 def bs_helper(n, slate):
+    # Choose this path when `n == 0` is true.
     if n == 0:
         print(slate)
     else:

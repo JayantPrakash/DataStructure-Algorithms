@@ -1,3 +1,4 @@
+# Key idea: Track heap ordering and which element is kept at the root.
 import heapq
 h = [10, 20, 15, 30, 40]
 heapq.heapify(h)

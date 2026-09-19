@@ -1,3 +1,4 @@
+# Key idea: Track heap ordering and which element is kept at the root.
 import heapq
 h = []
 heapq.heappush(h, (5, 'write code'))
@@ -7,8 +8,10 @@ heapq.heappush(h, (3, 'create tests'))
 print(heapq.heappop(h))
 print(h)
 
+# Compute or update the heapsort result for the supplied input.
 def heapsort(iterable):
     h = []
+    # Process each value from `iterable`.
     for value in iterable:
         heapq.heappush(h, value)
     return [heapq.heappop(h) for i in range(len(h))]

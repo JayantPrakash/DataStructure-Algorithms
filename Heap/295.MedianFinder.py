@@ -1,9 +1,13 @@
+# Key idea: Track heap ordering and which element is kept at the root.
 import heapq as hp
+# Group the state and operations used by the MedianFinder implementation.
 class MedianFinder:
 
+    # Initialize the state needed by a new instance.
     def __init__(self):
         self._small_heap = []
         self._large_heap = []
+    # Compute or update the add num result for the supplied input.
     def addNum(self, num: int) -> None:
         # add to small heap by default
         hp.heappush(self._small_heap, -1*num)
@@ -17,14 +21,18 @@ class MedianFinder:
         if len(self._small_heap) - len(self._large_heap) == 2:
             val = hp.heappop(self._small_heap) * -1
             hp.heappush(self._large_heap, val)
+        # Choose this path when `len(self._large_heap) - len(self._small_heap) == 2` is true.
         if len(self._large_heap) - len(self._small_heap) == 2:
             val = hp.heappop(self._large_heap)
             hp.heappush(self._small_heap, -1 * val)        
 
 
+    # Compute or update the find median result for the supplied input.
     def findMedian(self) -> float:
+        # Choose this path when `len(self._large_heap) == len(self._small_heap)` is true.
         if len(self._large_heap) == len(self._small_heap):
             self.median = (self._large_heap[0] + self._small_heap[0] * -1)/2.0    
+        # Choose this path when `len(self._large_heap) > len(self._small_heap)` is true.
         elif len(self._large_heap) > len(self._small_heap):
             self.median = self._large_heap[0]
         else:

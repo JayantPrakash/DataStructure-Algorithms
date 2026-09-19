@@ -1,11 +1,16 @@
+# Key idea: Trace each recursive choice, the base case, and the backtracking step.
+# Compute or update the ps helper result for the supplied input.
 def ps_helper(slate, array):
+    # Choose this path when `len(array) == 0` is true.
     if len(array) == 0:
         print(slate)
     else:
+        # Process each value from `range(0, len(array) - 1)`.
         for i in range(0,len(array)-1):
             #ps_helper(slate + str(array[i]), str(array[:i]) + str(array[i+1,:]))
             ps_helper(slate + array[i], array[:i] + array[i+1:])
 
+# Compute or update the permutation without rep result for the supplied input.
 def permutation_without_rep(array):
     ps_helper(" ",array)
 

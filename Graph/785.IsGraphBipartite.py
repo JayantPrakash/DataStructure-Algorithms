@@ -1,5 +1,8 @@
+# Key idea: Track visited or connected state as vertices and edges are processed.
 import collections
+# Group the state and operations used by the IsGraphBipartite implementation.
 class Solution:
+    # Compute or update the is bipartite result for the supplied input.
     def isBipartite(self,graph):
         n = len(graph)
         adj_list = graph
@@ -7,16 +10,20 @@ class Solution:
         visited = [-1] * n
         parent = [-1] * n
         distance = [-1] * n
+        # Traverse the reachable structure using BFS.
         def bfs(source):
             q = collections.deque()
             q.append(source)
             visited[source] = 1
             distance[source] = 0
             dist = 0
+            # Keep processing while `len(q) != 0` remains true.
             while len(q) != 0:
                 node = q.popleft()
                 visited[node] = 1
+                # Process each value from `adj_list[node]`.
                 for neighbor in adj_list[node]:
+                    # Choose this path when `visited[neighbor] == -1` is true.
                     if visited[neighbor] == -1:
                         parent[neighbor] = node
                         q.append(neighbor)
@@ -35,6 +42,7 @@ class Solution:
         #num_components = 0
 
         for v in range(n):
+            # Choose this path when `visited[v] == -1` is true.
             if visited[v] == -1:
                 #num_components += 1
                 #if num_components > 1:

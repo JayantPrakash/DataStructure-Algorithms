@@ -1,19 +1,28 @@
+# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
+# Group the state and operations used by the design hashset implementation.
 class MyHashSet:
 
+    # Initialize the state needed by a new instance.
     def __init__(self):
         self.hash_set = set()
 
+    # Compute or update the add result for the supplied input.
     def add(self, key: int) -> None:
+        # Choose this path when `key not in self.hash_set` is true.
         if key not in self.hash_set:
             self.hash_set.add(key)
 
         
 
+    # Compute or update the remove result for the supplied input.
     def remove(self, key: int) -> None:
+        # Choose this path when `key in self.hash_set` is true.
         if key in self.hash_set:
             self.hash_set.remove(key)
 
+    # Compute or update the contains result for the supplied input.
     def contains(self, key: int) -> bool:
+        # Choose this path when `key in self.hash_set` is true.
         if key in self.hash_set:
             return True
         else:

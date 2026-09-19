@@ -1,3 +1,5 @@
+# Key idea: Track heap ordering and which element is kept at the root.
+# Compute or update the insert result for the supplied input.
 def insert(A, n):
     i = n
     temp = A[n]
@@ -10,7 +12,9 @@ def insert(A, n):
 
     return A    
 
+# Compute or update the create heap result for the supplied input.
 def create_heap(A):
+    # Process each value from `range(1, len(A))`.
     for i in range(1, len(A)):
         insert(A,i)
 

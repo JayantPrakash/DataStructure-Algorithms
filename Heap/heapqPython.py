@@ -1,3 +1,4 @@
+# Key idea: Track heap ordering and which element is kept at the root.
 import heapq
 
 # Creating a list
@@ -43,6 +44,7 @@ heapq.heapify(list_stu)
 
 print("The order of presentation is :")
 
+# Process each value from `list_stu`.
 for i in list_stu:
   print(i[0],':',i[1])
 

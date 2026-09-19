@@ -1,3 +1,4 @@
+# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 
 
 # Stack
