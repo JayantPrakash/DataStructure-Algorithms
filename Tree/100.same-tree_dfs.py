@@ -1,4 +1,3 @@
-# Key idea: Trace the recursive or explicit-stack depth-first traversal and its return values.
 """
 Question:
 Given the roots of two binary trees p and q, write a function to 
@@ -11,16 +10,14 @@ are structurally identical, and the nodes have the same value.
 from collections import deque
 
 from build_tree import build_tree
-# Group the state and operations used by the same tree dfs implementation.
 class TreeNode(object):
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the same tree dfs implementation.
 class Solution(object):
-    # Compute or update the is same tree result for the supplied input.
+    # Compare corresponding branches recursively; matching values alone do not imply matching tree shape.
+    # O(n) time and O(h) stack space; is_same is reset for each top-level comparison.
     def isSameTree(self, p, q):
         """
         :type p: Optional[TreeNode]
@@ -30,11 +27,10 @@ class Solution(object):
 
         self.is_same = True
 
-        # Choose this path when `p is None and q is None` is true.
         if p is None and q is None:
             return True
         
-        # Choose this path when `p is not None and q is None or (p is None and q is not None)` is true.
+        # Exactly one absent root is a structural mismatch before any value can be compared.
         if p is not None and q is None or p is None and q is not None :  
             return False   
         
@@ -42,24 +38,22 @@ class Solution(object):
 
         return self.is_same
     
-    # Traverse the reachable structure using DFS.
+    # This helper receives two existing nodes and reports whether their subtrees match.
     def dfs(self, p,q):
 
-        # Choose this path when `p.val != q.val` is true.
+        # A value mismatch rejects the pair and records failure in the shared result flag.
         if p.val != q.val:
             self.is_same = False
             return False
         
-        # Choose this path when `p.left is None and q.left is None and (p.right is None) and (q.right is ...` is true.
         if p.left is None and q.left is None and p.right is None and q.right is None:
             return True
     
-        # Choose this path when `p.left is not None and q.left is None or (p.left is None and q.left is n...` is true.
+        # Check left-child presence on both sides before descending; the right-child check does the same.
         if p.left is not None and q.left is None or p.left is None and q.left is not None :  
             self.is_same = False
             return False   
             
-        # Choose this path when `p.right is not None and q.right is None or (p.right is None and q.right ...` is true.
         if p.right is not None and q.right is None or  p.right is None and q.right is not None :  
             self.is_same = False
             return False
@@ -68,15 +62,13 @@ class Solution(object):
         
         is_left_tree_same = True
         is_right_tree_same = True
-        # Choose this path when `p.left and q.left` is true.
         if p.left and q.left:
             is_left_tree_same = self.dfs(p.left, q.left)
 
-        # Choose this path when `p.right and q.right` is true.
         if p.right and q.right:
             is_right_tree_same = self.dfs(p.right, q.right)
 
-        # Choose this path when `is_left_tree_same and is_right_tree_same` is true.
+        # Both corresponding subtrees must match; a failure on either side rejects the parent pair.
         if is_left_tree_same and is_right_tree_same:
             return True
         else:

@@ -1,22 +1,21 @@
-# Key idea: Track the active range and the condition that moves its boundaries.
 from typing import List
-# Group the state and operations used by the minimum size subarray sum implementation.
 class Solution:
-    # Compute or update the min sub array len result for the supplied input.
+    # Sliding window for positive numbers: extending right increases the sum; removing left decreases it.
+    # Each boundary crosses the array once, so O(n) time and O(1) space.
     def minSubArrayLen(self, target: int, nums: List[int]) -> int:
         total, L = 0, 0
         min_length = float("inf")
-        # Process each value from `range(len(nums))`.
         for R in range(len(nums)):
+            # Include the new right endpoint before testing whether the window reaches target.
             total += nums[R]
 
-            # Keep processing while `total >= target` remains true.
+            # Record every qualifying window, then shrink to seek a shorter one with the same right endpoint.
             while total >= target:
                 min_length = min(R-L+1, min_length)
                 total -= nums[L]
                 L += 1
     
-        # Choose this path when `min_length == float('inf')` is true.
+        # Infinity means no window ever reached target; the required no-solution answer is zero.
         if min_length == float("inf"): return 0
         return min_length
 

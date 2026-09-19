@@ -1,7 +1,6 @@
-# Key idea: Track how values move toward their final sorted positions.
-# Group the state and operations used by the Intersection of Two Arrays implementation.
 class Solution(object):
-    # Compute or update the intersection result for the supplied input.
+    # Sort both inputs, then compare their current smallest unprocessed values.
+    # Both caller lists are mutated; sorting and linear result-membership checks add to scan cost.
     def intersection(self, nums1, nums2):
         """
         :type nums1: List[int]
@@ -15,21 +14,19 @@ class Solution(object):
         nums1.sort()
         nums2.sort()
         result = []
-        # Keep processing while `i < m and j < n` remains true.
         while i < m and j < n:
-            # Choose this path when `nums1[i] == nums2[j]` is true.
             if nums1[i] == nums2[j]:
-                # Choose this path when `nums1[i] not in result` is true.
+                # Deduplicate output using a list search, which is O(r) for r retained values, not O(1).
                 if nums1[i] not in result:
                     result.append(nums1[i])
                 i += 1
                 j += 1
-            # Choose this path when `nums1[i] < nums2[j]` is true.
+            # Discard the smaller value: it cannot match this or any later value in the other sorted list.
             elif nums1[i] < nums2[j]:
                 i += 1
-            # Choose this path when `nums2[j] < nums1[i]` is true.
             elif nums2[j] < nums1[i]:
                 j += 1
+        # The two-pointer scan is O(m+n), but repeated list deduplication can make total work quadratic.
         return result
 
 sol = Solution()
@@ -39,6 +36,4 @@ print(sol.intersection(nums1,nums2))
 
 print(set(nums2))
 
-#T(n) = O(max(m,n))
-#S(n) = O(min(m,n))
 

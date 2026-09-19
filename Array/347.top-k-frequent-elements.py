@@ -1,23 +1,23 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 from typing import Optional, List
-# Group the state and operations used by the top k frequent elements implementation.
 class Solution:
-    # Compute or update the top kfrequent result for the supplied input.
+    # Count occurrences, sort distinct values by frequency, then take the first k.
+    # For u distinct values: O(n + u log u) time and O(u) space.
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
         dict_elem = {}
 
-        # Process each value from `range(len(nums))`.
+        # Aggregate repeated numbers so each number receives one ranking entry.
         for i in range(len(nums)):
-            # Choose this path when `nums[i] in dict_elem` is true.
             if nums[i] in dict_elem:
                 dict_elem[nums[i]] = dict_elem[nums[i]] + 1
             else:
                 dict_elem[nums[i]] = 1
 
 
+        # Sort descending by the count rather than the numeric key; dictionary iteration preserves that order.
         dict_elem = dict(sorted(dict_elem.items(),
                                 key = lambda item : item[1], reverse = True))
 
+        # The first k keys are now the k highest-frequency values.
         keys = list(dict_elem.keys())
         return keys[0:k]    
 

@@ -1,18 +1,16 @@
-# Key idea: Trace the queue one breadth-first level at a time.
 from collections import defaultdict
 from collections import deque
 
-# Group the state and operations used by the bfs implementation.
 class Graph:
-    # Initialize the state needed by a new instance.
     def __init__(self):
         self.graph = defaultdict(list)
 
-    # Record an edge in the graph representation.
+    # This stores a directed edge u -> v; no reverse edge is inserted.
     def addEdge(self,u,v):
         self.graph[u].append(v)
 
-    # Traverse the reachable structure using BFS.
+    # Use a FIFO frontier to visit reachable vertices in breadth-first order.
+    # The visited dictionary prevents repeated work; expected O(V + E) time and O(V) traversal space.
     def bfs(self,source):
         captured = {}
         visited = {}
@@ -20,25 +18,23 @@ class Graph:
         queue = deque()
         queue.append(source)
 
-        # Keep processing while `len(queue) != 0` remains true.
         while len(queue)!= 0:
+            # Process the oldest discovered vertex before vertices discovered from it.
             u = queue.popleft()
             print(u)
             visited[u] = True
             captured[u] = True
-            # Process each value from `self.graph[u]`.
             for v in self.graph[u]:
-                # Choose this path when `v not in visited` is true.
+                # Mark neighbors on enqueue so multiple incoming edges cannot schedule the same vertex twice.
                 if v not in visited:
                     visited[v] = True
                     queue.append(v)
 
 
-    # Compute or update the print vert result for the supplied input.
+    # Display the adjacency mapping: each source followed by its outgoing neighbors.
     def print_vert(self):
         #print(self.graph.keys())
         vert = []
-        # Process each value from `self.graph.items()`.
         for item in self.graph.items():
 
             print(item[0],item[1])

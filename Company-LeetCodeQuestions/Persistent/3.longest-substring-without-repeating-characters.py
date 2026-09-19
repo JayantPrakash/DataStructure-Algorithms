@@ -1,21 +1,19 @@
-# Key idea: Track the current node, the chosen subtree, and the value returned upward.
 import math
-# Group the state and operations used by the longest substring without repeating characters implementation.
 class Solution:
-    # Compute or update the length of longest substring result for the supplied input.
+    # Slide a unique-character window; each boundary moves forward at most n times.
+    # Expected O(n) time and O(u) space. This version returns -inf for empty input.
     def lengthOfLongestSubstring(self, s):
         L = 0
         len_longest_char = -math.inf
         window = set()
-        # Process each value from `range(len(s))`.
         for R in range(len(s)):
-            # Keep processing while `s[R] in window` remains true.
+            # Evict characters from the left until the previous occurrence of the incoming character is removed.
             while s[R] in window:
                 window.remove(s[L])
                 L += 1
 
             window.add(s[R])
-            # Choose this path when `len(window) > len_longest_char` is true.
+            # With uniqueness restored, set size equals the length of the contiguous window.
             if len(window) > len_longest_char:
                 len_longest_char = len(window)
                 

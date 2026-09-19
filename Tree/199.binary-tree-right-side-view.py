@@ -1,47 +1,42 @@
-# Key idea: Trace the queue one breadth-first level at a time.
 # Definition for a binary tree node.
 from typing import List, Optional
 from collections import deque
 
-# Group the state and operations used by the binary tree right side view implementation.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the binary tree right side view implementation.
 class Solution:
-    # Compute or update the right side view result for the supplied input.
+    # The visible node from the right is the rightmost existing node at each depth.
+    # Use BFS with O(n) time and O(w) temporary storage.
     def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
         result = []
 
-        # Choose this path when `root is None` is true.
         if root is None:
             return result
         
         q = deque()
         q.append(root)
 
-        # Keep processing while `len(q) != 0` remains true.
         while len(q) != 0:
+            # Snapshot a level so its children cannot enter the same visibility decision.
             len_q = len(q)
 
             temp = []
 
-            # Process each value from `range(len_q)`.
             for _ in range(len_q):
                 node = q.popleft()
                 temp.append(node.val)
 
-                # Choose this path when `node.left is not None` is true.
+                # Discover left before right so each batch is processed in horizontal order.
                 if node.left is not None:
                     q.append(node.left)
 
-                # Choose this path when `node.right is not None` is true.
                 if node.right is not None:
                     q.append(node.right)
 
+            # The final value in the level is visible, even if it comes from a left subtree when no farther-right node exists.
             result.append(temp[-1])
         return result                       
                 

@@ -1,7 +1,6 @@
-# Key idea: Trace each recursive choice, the base case, and the backtracking step.
-# Group the state and operations used by the Permutations Mutable implementation.
 class Solution(object):
-    # Compute or update the permute result for the supplied input.
+    # Build permutations of distinct values by fixing one position per recursion level.
+    # Copying n! length-n answers costs O(n * n!) time/output space; active working space is O(n).
     def permute(self, nums):
         """
         :type nums: List[int]
@@ -11,18 +10,19 @@ class Solution(object):
         self.helper(nums,0,[])
         return self.result
 
-    # Compute or update the helper result for the supplied input.
+    # S[:i] contains chosen positions; S[i:] contains values still available to pick.
     def helper(self, S, i, slate):
-        # Choose this path when `i == len(S)` is true.
         if i == len(S):
+            # At depth n the permutation is complete; copy the slate before it is reused.
             self.result.append(slate[:])
             return
         else:
-            # Process each value from `range(i, len(S))`.
             for pick in range(i,len(S)):
+                # Choose a remaining value for position i by swapping it into the fixed prefix.
                 S[i],S[pick] = S[pick], S[i]
                 slate.append(S[i])
                 self.helper(S,i+1,slate)
+                # Undo both the slate append and the swap so the next sibling starts from the same state.
                 slate.pop()
                 S[i],S[pick] = S[pick], S[i]
 

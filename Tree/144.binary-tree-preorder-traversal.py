@@ -1,29 +1,26 @@
-# Key idea: Trace the recursive or explicit-stack depth-first traversal and its return values.
 # Definition for a binary tree node.
 from typing import List, Optional
 
 
-# Group the state and operations used by the binary tree preorder traversal implementation.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the binary tree preorder traversal implementation.
 class Solution:
-    # Compute or update the preorder traversal result for the supplied input.
+    # Preorder means node, left subtree, right subtree; record a parent before its descendants.
+    # O(n) time, O(h) call-stack space, and O(n) output.
     def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         result = []
         self.preorderHelper(root, result)
         return result
     
-    # Compute or update the preorder helper result for the supplied input.
     def preorderHelper(self, node, res):
-        # Choose this path when `not node` is true.
+        # An absent subtree contributes no values and stops that recursive branch.
         if not node:
             return None
         
+        # Record this node before either recursive call; this placement defines preorder.
         res.append(node.val)
         self.preorderHelper(node.left, res)
         self.preorderHelper(node.right, res)

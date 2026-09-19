@@ -1,9 +1,9 @@
-# Key idea: Trace each recursive choice, the base case, and the backtracking step.
-# Group the state and operations used by the Subsets mutable implementation.
 class Solution(object):
     #def __init__(self):
     #    self.result = []
 
+    # For each input value choose exclude or include, giving 2^n subsets when values are distinct.
+    # Copying answers costs O(n * 2^n) time/output space; the active slate and stack use O(n).
     def subsets(self, nums):
         """
         :type nums: List[int]
@@ -14,16 +14,18 @@ class Solution(object):
         self.helper(nums, 0, [])
         return self.result
 
-    # Compute or update the helper result for the supplied input.
+    # i is the next undecided input position; slate contains only choices from earlier positions.
     def helper(self, S, i, slate):
-        # Choose this path when `i == len(S)` is true.
         if i == len(S):
+            # Save a snapshot at a leaf; without copying, every result would reference the same mutable list.
             self.result.append(slate[:])
             return
         else:
+            # First explore exclusion; then append S[i] and explore inclusion.
             self.helper(S, i + 1, slate)
             slate.append(S[i])
             self.helper(S, i + 1, slate)
+            # Restore the slate to the caller's state so one branch cannot leak choices into another.
             slate.pop()
 
 
@@ -32,13 +34,5 @@ nums = [1, 2, 3]
 sol = Solution()
 print(sol.subsets(nums))
 
-#s(n) = i/p + intermediate + o/p
-#ip -n, intermediate - O(n) - there is only one copy of slate
-# o/p - O(2^n*n/2) - no of leaf nodes - 2^n, average length of leaf is n/2. No of elements in left side
-# has complimentary number of elements in right side. For ex - {1} and {2,3} are complimentary
-#S(n) - O(2^n*n)
 
-#T(n) - O(2^n* 1) - internal node, leaf node - O(2^n*)n/2
-# - *n/2  as for each leaf node, slate is copied and added to result(avg length of leaf is n/2)
-#T(n) - O(2^n*n)
 

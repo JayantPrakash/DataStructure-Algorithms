@@ -1,7 +1,5 @@
-# Key idea: Trace each recursive choice, the base case, and the backtracking step.
-# Group the state and operations used by the Permutations II Mutable implementation.
 class Solution(object):
-    # Compute or update the permute result for the supplied input.
+    # Generate distinct permutations when values repeat; duplicate choices must be suppressed at each depth.
     def permute(self, nums):
         """
         :type nums: List[int]
@@ -11,22 +9,23 @@ class Solution(object):
         self.helper(nums,0,[])
         return self.result
 
-    # Compute or update the helper result for the supplied input.
     def helper(self, S, i, slate):
-        # Choose this path when `i == len(S)` is true.
         if i == len(S):
+            # Save a copy only when every position is fixed; subsequent backtracking mutates the live slate.
             self.result.append(slate[:])
             return
         else:
+            # This per-call list remembers values already placed at position i, not values used globally.
             hsmap = []
-            # Process each value from `range(i, len(S))`.
             for pick in range(i,len(S)):
-                # Choose this path when `S[pick] not in hsmap` is true.
+                # Choosing an equal value again at the same depth would recreate the same suffix permutations.
+                # Membership here is linear because hsmap is a list.
                 if S[pick] not in hsmap:
                     #continue
                     S[i],S[pick] = S[pick], S[i]
                     slate.append(S[i])
                     self.helper(S,i+1,slate)
+                    # Restore slate and swapped input before recording the tried value and trying another choice.
                     slate.pop()
                     S[i],S[pick] = S[pick], S[i]
                     hsmap.append(S[pick])

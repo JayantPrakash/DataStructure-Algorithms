@@ -1,15 +1,12 @@
-# Key idea: Follow pointer updates carefully so links are neither skipped nor lost.
-# Compute or update the k smallest number result for the supplied input.
+# Merge sorted lists into one sorted result, then select the one-based kth position.
+# Repeated growing merges can take O(mN) time for m lists and N total values; peak storage is O(N).
 def k_smallest_number(lists, k):
-    # Replace this placeholder return statement with your code
 
     m = len(lists)
-    # Choose this path when `m == 0` is true.
     if m == 0:
         return 0
-    # Choose this path when `m == 1` is true.
+    # This version clamps an oversized k to the last value; it assumes a positive k and a nonempty list.
     if m == 1:
-        # Choose this path when `k - 1 < len(lists[0])` is true.
         if k -1 < len(lists[0]):
             return lists[0][k-1]
         else:
@@ -17,34 +14,31 @@ def k_smallest_number(lists, k):
 
     final_list = lists[0]
 
-    # Process each value from `range(m)`.
     for i in range(m):
         list1 = final_list
         list2 = lists[i + 1]
 
+        # Each merge preserves sorted order, making the accumulated result ready for the next list.
         final_list = merge(list1, list2)
 
-        # Choose this path when `i + 1 == m - 1` is true.
         if i + 1 == m - 1:
             break
 
-    # Choose this path when `k > len(final_list) - 1` is true.
+    # Oversized k returns the largest value rather than reporting an invalid rank.
     if k > len(final_list) - 1:
         return final_list[-1]
 
     return final_list[k - 1]
 
 
-# Compute or update the merge result for the supplied input.
+# Choose the smaller unconsumed head, then append any remaining suffix: linear time in both lengths.
 def merge(list1, list2):
     i = 0
     j = 0
     mid = len(list1) - 1
     end = len(list2) - 1
     mlist = []
-    # Keep processing while `i <= mid and j <= end` remains true.
     while i <= mid and j <= end:
-        # Choose this path when `list1[i] > list2[j]` is true.
         if list1[i] > list2[j]:
             mlist.append(list2[j])
             j += 1
@@ -52,12 +46,11 @@ def merge(list1, list2):
             mlist.append(list1[i])
             i += 1
 
-    # Keep processing while `i <= mid` remains true.
+    # Once the other list runs out, the remaining values are already in order.
     while i <= mid:
         mlist.append(list1[i])
         i += 1
 
-    # Keep processing while `j <= end` remains true.
     while j <= end:
         mlist.append(list2[j])
         j += 1

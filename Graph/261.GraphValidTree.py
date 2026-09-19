@@ -1,54 +1,48 @@
-# Key idea: Track the current node, the chosen subtree, and the value returned upward.
 import collections
-# Group the state and operations used by the GraphValidTree implementation.
 class Solution:
-    # Compute or update the valid tree result for the supplied input.
+    # An undirected tree must be connected and have no cycle; BFS checks both conditions.
+    # Adjacency construction and traversal take O(V + E) time and O(V + E) storage.
     def validTree(self,n,edges):
         adj_list = [ [] for _ in range(n)]
 
-        # Process each value from `edges`.
         for (src,dist) in edges:
+            # Store both directions because an undirected edge is reachable from either endpoint.
             adj_list[src].append(dist)
             adj_list[dist].append(src)
 
         visited = [-1] * n
         parent = [-1] * n
 
-        # Traverse the reachable structure using BFS.
+        # Return True when a cycle is found, not when traversal succeeds.
         def bfs(source):
             q = collections.deque()
             q.append(source)
             visited[source] = 1
 
-            # Keep processing while `len(q) != 0` remains true.
             while len(q) != 0:
                 node = q.popleft()
                 visited[node] = 1
 
-                # Process each value from `adj_list[node]`.
                 for neighbor in adj_list[node]:
-                    # Choose this path when `visited[neighbor] == -1` is true.
                     if visited[neighbor] == -1:
+                        # Mark on discovery so two frontier vertices cannot enqueue the same unseen vertex.
                         parent[neighbor] = node
                         q.append(neighbor)
                         visited[neighbor] = 1
                     else:
-                        #condition for cross edge
+                        # The edge back to the parent is expected; any other already-discovered neighbor closes a cycle.
                         if parent[node]!= neighbor:
                             return True
             return False
 
         num_components = 0
 
-        # Process each value from `range(n)`.
         for v in range(n):
-            # Choose this path when `visited[v] == -1` is true.
             if visited[v] == -1:
                 num_components += 1
-                # Choose this path when `num_components > 1` is true.
+                # A new traversal after the first component proves the graph is disconnected.
                 if num_components > 1:
                     return False
-                # Choose this path when `bfs(v)` is true.
                 if bfs(v):
                     return False
         return True

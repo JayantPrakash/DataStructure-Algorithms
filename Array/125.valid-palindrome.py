@@ -1,4 +1,3 @@
-# Key idea: Track the active range and the condition that moves its boundaries.
 """
 Question:
 125. Valid Palindrome
@@ -8,9 +7,9 @@ Alphanumeric characters include letters and numbers.
 Given a string s, return true if it is a palindrome, or false otherwise.
 """
 
-# Group the state and operations used by the valid palindrome implementation.
 class Solution:
-    # Compute or update the is palindrome result for the supplied input.
+    # Normalize case and remove punctuation, then compare mirrored positions.
+    # Creating cleaned_str makes this O(n) time and O(n) space, despite constant-space pointers.
     def isPalindrome(self, s: str) -> bool:
 
         cleaned_str = "".join(char.lower() for char in s if char.isalnum())
@@ -18,15 +17,16 @@ class Solution:
         l = 0
         r = len(cleaned_str) - 1
 
-        # Keep processing while `l < r` remains true.
+        # Each successful comparison rules out both ends; meeting in the middle proves symmetry.
         while l < r:
-            # Choose this path when `cleaned_str[l] != cleaned_str[r]` is true.
+            # One mismatched mirrored pair is enough to reject the entire string.
             if cleaned_str[l] != cleaned_str[r]:
                 return False
             
             l+=1
             r-=1
 
+        # Empty and single-character cleaned strings are palindromes without any comparisons.
         return True
     
 

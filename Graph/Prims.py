@@ -1,4 +1,3 @@
-# Key idea: Trace the frontier heap as the minimum spanning tree grows.
 from heapq import heappush,heappop
 """
 h = []
@@ -9,10 +8,8 @@ heappush(h, (3, 'create tests'))
 print(h)
 print(heappop(h)[1][0])
 """
-# Group the state and operations used by the Prims implementation.
 class Graph:
 
-    # Initialize the state needed by a new instance.
     def __init__(self, vertices):
         self.V = vertices
         self.graph = [ [] for _ in range(vertices)]
@@ -27,31 +24,32 @@ class Graph:
         self.graph[u].append([v, w])
         self.graph[v].append([u, w])
 
-    # Compute or update the prims result for the supplied input.
+    # Grow a tree from vertex 0 by repeatedly choosing the cheapest edge crossing its frontier.
+    # Unlike Dijkstra, heap priorities are single-edge weights, not cumulative path costs.
     def prims(self):
         pq = []
         self.captured[0] = 1
 
-        # Process each value from `self.graph[0]`.
         for node,cost in self.graph[0]:
             heappush(pq,(cost,(0,node)))
 
-        # Keep processing while `len(pq) != 0` remains true.
         while len(pq) != 0:
             min_neighbor = heappop(pq)
-            # Choose this path when `self.captured[min_neighbor[1][1]] == 1` is true.
+            # An edge becomes stale if its destination was already captured through another edge.
             if self.captured[min_neighbor[1][1]] == 1:
                 continue
+            # The cheapest edge to an uncaptured vertex is safe by the minimum-spanning-tree cut property.
             self.cost += min_neighbor[0]
             self.mst.append(min_neighbor)
             self.captured[min_neighbor[1][1]] = 1
 
-            # Process each value from `self.graph[min_neighbor[1][1]]`.
             for node, cost in self.graph[min_neighbor[1][1]]:
-                # Choose this path when `self.captured[node] == -1` is true.
                 if self.captured[node] == -1:
+                    # Expose outgoing edges from the new vertex to expand the frontier.
                     heappush(pq,(cost,(min_neighbor[1][1],node)))
 
+        # Only vertex 0's component is covered; disconnected graphs are not rejected.
+        # State persists across calls; the edge heap gives O(E log(E + 1)) time and O(V + E) space.
         return self.mst,self.cost
 
 # Run this example only when the file is executed directly.

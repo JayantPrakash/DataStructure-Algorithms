@@ -1,51 +1,46 @@
-# Key idea: Trace the queue one breadth-first level at a time.
 # Definition for a binary tree node.
 from typing import List, Optional
 from collections import deque
 
-# Group the state and operations used by the binary tree zigzag level order traversal implementation.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the binary tree zigzag level order traversal implementation.
 class Solution:
-    # Compute or update the zigzag level order result for the supplied input.
+    # Use ordinary BFS, then reverse alternate output rows to create zigzag order.
+    # All node visits and reversals total O(n) time; the queue uses O(w) space.
     def zigzagLevelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
         result = []
 
-        # Choose this path when `root is None` is true.
         if root is None:
             return result
 
         q = deque()
         q.append(root)
         reverse = False
-        # Keep processing while `len(q) != 0` remains true.
         while len(q) != 0:
+            # Snapshot this level before enqueueing children from it.
             len_q = len(q)
 
             temp = []
 
-            # Process each value from `range(len_q)`.
             for _ in range(len_q):
                 node = q.popleft()
                 temp.append(node.val)
 
-                # Choose this path when `node.left is not None` is true.
+                # Always discover left before right; the direction change belongs to output formatting only.
                 if node.left is not None:
                     q.append(node.left)
 
-                # Choose this path when `node.right is not None` is true.
                 if node.right is not None:
                     q.append(node.right)
 
-            # Choose this path when `not reverse` is true.
+            # Leave the root row forward, then alternate forward/reversed rows.
             if not reverse:
                 reverse = True
             else:    
+                # Reverse the completed level's values without rearranging the queue or tree.
                 temp.reverse()
                 reverse = False    
             

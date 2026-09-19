@@ -1,21 +1,20 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 from typing import Optional, List
-# Group the state and operations used by the two sum implementation.
 class Solution:
-    # Compute or update the two sum result for the supplied input.
+    # Use a value-to-index lookup to find target - nums[i] without a nested scan.
+    # Two passes take expected O(n) time and O(n) space.
     def twoSum(self, nums: List[int], target: int) -> List[int]:
 
         dict = {}
 
-        # Process each value from `enumerate(nums)`.
+        # Keep the last index for each value; duplicates overwrite earlier indices.
         for i, key in enumerate(nums):
             dict[key] = i 
 
-        # Process each value from `range(len(nums))`.
+        # Search the original list, so duplicate values still have distinct candidate indices.
         for i in range(len(nums)):
             remain_val = target - nums[i]
 
-            # Choose this path when `remain_val in dict.keys() and i != dict[remain_val]` is true.
+            # Reject pairing an element with itself; [3, 3] still works because indices differ.
             if (remain_val in dict.keys()) and (i != dict[remain_val]):
                 return([i, dict[remain_val]])
 

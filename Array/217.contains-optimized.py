@@ -1,19 +1,18 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 from typing import Optional, List
-# Group the state and operations used by the contains optimized implementation.
 class Solution:
-    # Compute or update the contains duplicate result for the supplied input.
+    # A set represents exactly the values seen earlier, with no unnecessary index information.
+    # Expected O(n) time and O(n) space.
     def containsDuplicate(self, nums: List[int]) -> bool:
 
         seen = set()
 
-        # Process each value from `nums`.
         for num in nums:
-            # Choose this path when `num in seen` is true.
+            # Check before inserting so the current occurrence cannot match itself.
             if num in seen:
                 return True
             seen.add(num)
 
+        # Reaching the end means every insertion introduced a new value.
         return False     
     
 sol = Solution()

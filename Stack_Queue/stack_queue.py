@@ -1,27 +1,22 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 
 
 # Stack
-# Python code to demonstrate Implementing 
-# stack using list
+# A stack is LIFO: append and pop at the same end. Python list operations here are amortized O(1).
 stack = ["Amar", "Akbar", "Anthony"]
 stack.append("Ram")
 stack.append("Iqbal")
 print(stack)
 
-# Removes the last item
 print(stack.pop())
 
 print(stack)
 
-# Removes the last item
 print(stack.pop())
 
 print(stack)
 
-# Python code to demonstrate Implementing 
-# Stack using deque
 from collections import deque
+# Despite the variable name, this first deque example is a stack because it removes with pop().
 queue = deque(["Ram", "Tarun", "Asif", "John"])
 print(queue)
 queue.append("Akbar")
@@ -35,29 +30,24 @@ print(queue)
 
 # Queue
 
-# Python code to demonstrate Implementing 
-# Queue using list
+# A queue is FIFO: append at the right and remove from the left.
+# Using list.pop(0) shifts remaining entries, so each dequeue costs O(n).
 queue = ["Amar", "Akbar", "Anthony"]
 queue.append("Ram")
 queue.append("Iqbal")
 print(queue)
 
-# Removes the first item
 print(queue.pop(0))
 
 print(queue)
 
-# Removes the first item
 print(queue.pop(0))
 
 print(queue)
 
 
-# Python code to demonstrate Implementing 
-# Stack using deque
-# Python code to demonstrate Implementing 
-# Queue using deque
 from collections import deque
+# The final deque example uses append/popleft for FIFO order with O(1) endpoint operations.
 queue = deque(["Ram", "Tarun", "Asif", "John"])
 print(queue)
 queue.append("Akbar")

@@ -1,11 +1,9 @@
-# Key idea: Follow the divide, recursive sort, and merge phases.
-# Compute or update the merge result for the supplied input.
+# Merge two sorted slices into S; i+j is exactly the number of values already written.
 def merge(S1, S2, S):
     i = j = 0
 
-    # Keep processing while `i + j < len(S)` remains true.
     while i + j < len(S):
-        # Choose this path when `j == len(S2) or (i < len(S1) and S1[i] <= S2[j])` is true.
+        # Choose left when right is exhausted or left is no greater; ties from the left preserve stability.
         if j == len(S2) or (i <len(S1) and S1[i] <= S2[j] ):
             S[i+j] = S1[i]
             i = i + 1
@@ -13,11 +11,10 @@ def merge(S1, S2, S):
             S[i+j] = S2[j]
             j = j + 1
     return S
-# Compute or update the merge sort result for the supplied input.
+# Divide, sort both halves recursively, and merge: O(n log n) time with O(n) peak auxiliary storage.
 def mergeSort(S):
-    # Write your code here.
     n = len(S)
-    # Choose this path when `n < 2` is true.
+    # The slice is already sorted; this version returns its length rather than the list in this base case.
     if n < 2:
         return n
     mid = int(n/2)
@@ -25,6 +22,7 @@ def mergeSort(S):
     S1 = S[0:mid]
     S2 = S[mid:n]
 
+    # Recursive calls mutate their slices; merging those sorted slices writes back into S.
     mergeSort(S1)
     mergeSort(S2)
     return merge(S1,S2,S)

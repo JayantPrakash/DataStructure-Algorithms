@@ -1,9 +1,9 @@
-# Key idea: Track how each state reuses results from smaller subproblems.
-# Group the state and operations used by the climbing stairs implementation.
 class Solution:
-    # Compute or update the climb stairs result for the supplied input.
+    # Partition paths by their last jump: reaching n comes from n-1 by one step or n-2 by two steps.
+    # Without memoization the repeated subproblems take exponential time and O(n) stack space.
     def climbStairs(self, n: int) -> int:
-        # Choose this path when `n <= 2` is true.
+        # For the positive-n problem, one step has one route and two steps have two routes.
+        # This implementation returns zero for n == 0 rather than counting an empty route.
         if n <= 2:
             return n
         return self.climbStairs(n-1) + self.climbStairs(n-2) 

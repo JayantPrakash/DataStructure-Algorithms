@@ -1,15 +1,12 @@
-# Key idea: Follow pointer updates carefully so links are neither skipped nor lost.
-# Group the state and operations used by the LinedListImplementation implementation.
+# A singly linked node stores a value and the next link; only the head gives access to the chain.
 class Node():
 
-    # Initialize the state needed by a new instance.
     def __init__(self,data):
         self.data = data
         self.next = None
 
-# Compute or update the insert result for the supplied input.
+# Prepend in O(1): point the new node to the old head, then return the new head for the caller to retain.
 def insert(head,val):
-    # Choose this path when `head == None` is true.
     if head == None:
         head = Node(val)
     else:
@@ -18,48 +15,44 @@ def insert(head,val):
         head = new_node
     return head
 
-# Compute or update the print values result for the supplied input.
+# Following next links visits each node once: O(n) time and O(1) working space.
 def print_values(head):
     node = head
-    # Keep processing while `node is not None` remains true.
     while node is not None:
         print(node.data)
         node = node.next
 
-# Compute or update the search result for the supplied input.
+# Search sequentially because linked lists have no constant-time random access.
+# This version assumes head is nonempty.
 def search(head, val):
-    # Choose this path when `head.data == val` is true.
     if head.data == val:
         return True
     else:
         node = head
-        # Keep processing while `node is not None` remains true.
         while node is not None:
-            # Choose this path when `node.data is val` is true.
+            # This checks object identity, not value equality; equal but distinct objects may fail to match.
             if node.data is val:
                 return True
             else:
                 node = node.next
     return False
 
-# Compute or update the delete result for the supplied input.
+# Delete a one-based position by tracking the target and its predecessor; traversal takes O(n).
 def delete(head, position):
     count = 0
     prev = head
     temp = head
 
-    # Choose this path when `position == 1` is true.
+    # Removing the first node changes the head itself; the caller must keep the returned reference.
     if position == 1:
         head = head.next
     else:
-        # Process each value from `range(0, position)`.
         for i in range(0,position):
-            # Choose this path when `i == position - 1 and temp is not None` is true.
             if i == position - 1 and temp is not None:
+                # Bypass the target to preserve the remaining chain without copying any nodes.
                 prev.next = temp.next
             else:
                 prev = temp
-                # Choose this path when `prev is None` is true.
                 if prev is None:
                     break
                 temp = temp.next

@@ -1,8 +1,6 @@
-# Key idea: Trace the sorted edges and union-find decisions that build the spanning tree.
 # Class to represent a graph
 class Graph:
 
-    # Initialize the state needed by a new instance.
     def __init__(self, vertices):
         self.V = vertices
         self.graph = []
@@ -16,31 +14,29 @@ class Graph:
     def addEdge(self, u, v, w):
         self.graph.append([u, v, w])
 
-    # Driver code
+    # Follow parent links to the component leader and compress the path on the return journey.
     def find(self, i):
-        # Choose this path when `self.parent[i] == i` is true.
         if self.parent[i] == i:
             return i
         result = self.find(self.parent[i])
         self.parent[i] = result
         return result
 
-    # Compute or update the kruskal mst result for the supplied input.
+    # Process edges from cheapest to most expensive; accept an edge only if it joins two components.
+    # Sorting dominates at O(E log E); union-find uses path compression and union by size.
     def KruskalMST(self):
         self.graph = sorted(self.graph,
                             key=lambda item: item[2])
 
-        # Process each value from `self.graph`.
         for u, v, w in self.graph:
             lu = self.find(u)
             lv = self.find(v)
 
-            # cycle detected, not including in mst
+            # Equal leaders mean a path already connects the endpoints; adding this edge would create a cycle.
             if lu == lv: continue
 
-            # Choose this path when `lu != lv` is true.
             if lu != lv:
-                # Choose this path when `self.size[lu] >= self.size[lv]` is true.
+                # Attach the smaller component's root to the larger one to keep parent chains shallow.
                 if self.size[lu] >= self.size[lv]:
                     self.parent[lv] = lu
                     self.size[lu] += self.size[lv]
@@ -51,10 +47,12 @@ class Graph:
                 self.components -= 1
                 self.cost += w
                 self.mst.append((u, v))
-            # Choose this path when `self.components == 1` is true.
+            # One component means V-1 joining edges have connected the graph; the spanning tree is complete.
             if self.components == 1:
                 return self.cost, self.mst
 
+        # For the usual V >= 2 case, exhausting edges without connectivity means no spanning tree exists.
+        # This version also returns -1 for a one-vertex graph and retains state between method calls.
         return -1
 
 

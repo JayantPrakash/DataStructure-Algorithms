@@ -1,18 +1,18 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 from typing import List
-# Group the state and operations used by the longest consecutive sequence implementation.
 class Solution:
-    # Compute or update the longest consecutive result for the supplied input.
+    # A sequence can be counted from its smallest value: it has no predecessor in the set.
+    # Membership is expected O(1); the set uses O(n) space.
     def longestConsecutive(self, nums: List[int]) -> int:
         set_elems = set(nums)
         longest_seq = 0
-        # Process each value from `nums`.
+        # This iterates nums rather than the set: duplicate sequence starts repeat the same walk.
+        # Unlike the usual unique-start version, this implementation can take O(n^2) time.
         for num in nums:
-            # Choose this path when `num - 1 not in set_elems` is true.
+            # Values with a predecessor belong to a sequence counted from an earlier value.
             if num - 1 not in set_elems:
                 curr_val = num
                 length = 1
-                # Keep processing while `curr_val + 1 in set_elems` remains true.
+                # Extend by numeric adjacency, not by adjacency in the original array.
                 while (curr_val + 1) in set_elems:
                     curr_val += 1
                     length += 1

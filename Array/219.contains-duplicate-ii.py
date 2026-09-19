@@ -1,20 +1,19 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 from typing import List
-# Group the state and operations used by the contains duplicate ii implementation.
 class Solution:
-    # Compute or update the contains nearby duplicate result for the supplied input.
+    # Keep only earlier values whose indices are at most k positions from R.
+    # Expected O(n) time and O(min(n, k + 1)) space for nonnegative k.
     def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
         window = set()
         L = 0
 
-        # Process each value from `range(len(nums))`.
         for R in range(len(nums)):
-            # Choose this path when `R - L > k` is true.
+            # Expire an index before checking the new value, otherwise a distant duplicate could match.
             if R - L > k:
                 window.remove(nums[L])
                 L += 1
 
-            # Choose this path when `nums[R] in window` is true.
+            # A match is now both equal in value and close enough in index.
+            # The set is sufficient: any duplicate still inside the window would already have returned True.
             if nums[R] in window:
                 return True
 

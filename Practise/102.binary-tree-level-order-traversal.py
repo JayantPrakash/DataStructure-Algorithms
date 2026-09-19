@@ -1,43 +1,38 @@
-# Key idea: Trace the queue one breadth-first level at a time.
 # Definition for a binary tree node.
 from typing import List, Optional
 from collections import deque
 
-# Group the state and operations used by the binary tree level order traversal implementation.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the binary tree level order traversal implementation.
 class Solution:
-    # Compute or update the level order result for the supplied input.
+    # Group tree values by depth using BFS: O(n) time, O(w) queue space, and O(n) output.
     def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
 
-      # Choose this path when `root is None` is true.
+      # This practice version returns None for an empty tree, rather than an empty result list.
       if root is None:
           return None
 
       q = deque()
       q.append(root)
       result = []  
-      # Keep processing while `len(q) != 0` remains true.
       while(len(q) != 0):
+          # Snapshot the number of nodes already queued; children added below belong to the next depth.
           len_q = len(q)
           temp = []  
-          # Process each value from `range(len_q)`.
           for _ in range(len_q):
             node = q.popleft()
             temp.append(node.val)
-            # Choose this path when `node.left is not None` is true.
+            # Enqueue children left before right to preserve each level's left-to-right order.
             if node.left is not None:
                q.append(node.left)
 
-            # Choose this path when `node.right is not None` is true.
             if node.right is not None:
                 q.append(node.right)
 
+          # Append after the fixed-size batch, so one inner list represents exactly one level.
           result.append(temp)      
                
       return result

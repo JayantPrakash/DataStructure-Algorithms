@@ -1,39 +1,34 @@
-# Key idea: Track visited or connected state as vertices and edges are processed.
 import collections
-# Group the state and operations used by the connectedComponent implementation.
 class Solution:
-    # Compute or update the count components result for the supplied input.
+    # Each BFS consumes one whole undirected connected component, including isolated vertices.
+    # O(V + E) time; adjacency storage is O(V + E), and visited/queue storage is O(V).
     def countComponents(self,n,edges):
         adj_list = [ [] for _ in range(n)]
 
-        # Process each value from `edges`.
         for (src,dist) in edges:
+            # Add reverse adjacency as well, so connectivity does not depend on edge orientation.
             adj_list[src].append(dist)
             adj_list[dist].append(src)
 
         visited = [-1] * n
-        # Traverse the reachable structure using BFS.
         def bfs(source):
             q = collections.deque()
             q.append(source)
             visited[source] = 1
 
-            # Keep processing while `len(q) != 0` remains true.
             while len(q) != 0:
                 node = q.popleft()
                 visited[node] = 1
-                # Process each value from `adj_list[node]`.
                 for neighbor in adj_list[node]:
-                    # Choose this path when `visited[neighbor] == -1` is true.
+                    # Mark when enqueuing to prevent duplicate frontier entries from converging paths.
                     if visited[neighbor] == -1:
                         q.append(neighbor)
                         visited[neighbor] = 1
 
         num_components = 0
 
-        # Process each value from `range(n)`.
         for v in range(n):
-            # Choose this path when `visited[v] == -1` is true.
+            # An unseen vertex cannot belong to an earlier BFS component; start and count a new one.
             if visited[v] == -1:
                 bfs(v)
                 num_components += 1

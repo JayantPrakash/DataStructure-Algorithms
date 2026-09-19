@@ -1,24 +1,24 @@
-# Key idea: Track heap ordering and which element is kept at the root.
 from typing import List
 import heapq as hp
-# Group the state and operations used by the Kth Largest Element in Stream implementation.
+# Keep only the k largest values in a min-heap; its smallest value is the kth largest overall.
+# Duplicates count as separate stream elements.
 class KthLargest:
 
-    # Initialize the state needed by a new instance.
     def __init__(self, k: int, nums: List[int]):
+        # Reuse nums directly: heap construction and pruning mutate the caller's list.
         self._nums = nums
         self._k = k
         hp.heapify(self._nums)
-        # Keep processing while `len(self._nums) > k` remains true.
+        # Remove small values until at most k candidates remain; no future small value can improve the top k.
         while(len(self._nums) > k):
             hp.heappop(self._nums)
 
-    # Compute or update the add result for the supplied input.
+    # Push the new candidate and discard the minimum if capacity is exceeded: O(log(k + 1)) per update.
     def add(self, val: int) -> int:
         hp.heappush(self._nums,val)
-        # Choose this path when `len(self._nums) > self._k` is true.
         if len(self._nums) > self._k:
             hp.heappop(self._nums)
+        # The root is the kth largest once at least k values have arrived; before that it is the minimum seen.
         return self._nums[0]
         
 # Your KthLargest object will be instantiated and called as such:

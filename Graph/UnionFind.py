@@ -1,37 +1,35 @@
-# Key idea: Track visited or connected state as vertices and edges are processed.
-# Group the state and operations used by the UnionFind implementation.
 class UnionFind:
-    # Initialize the state needed by a new instance.
+    # Initially each element leads its own singleton set; component count starts at n.
     def __init__(self,n):
         self.parent = list(range(n))
         self.size = [1]*n
         self.num_components = n
-    # Find the representative for this item in the disjoint-set structure.
+    # A representative is a root whose parent is itself; all members of a set share that root.
     def find(self,i):
-        # using path compression
         if self.parent[i] == i:
             return i
 
         x = self.find(self.parent[i])
-        #updating parent of every found node
+        # Path compression redirects this node straight to the root, speeding up later finds.
         self.parent[i] = x
 
         return x
 
-    # Compute or update the union by size result for the supplied input.
+    # Find both roots first; merging only different roots preserves the partition of elements.
     def unionBySize(self,i,j):
 
         li = self.find(i)
         lj = self.find(j)
 
-        # Choose this path when `li == lj` is true.
+        # A redundant union changes neither the parent structure nor the component count.
         if li == lj:
             return
 
+        # This version reads and updates sizes at i/j rather than roots li/lj.
+        # Connectivity still merges roots, but size metadata can be wrong, so the usual size-balancing guarantee does not apply.
         size_i = self.size[i]
         size_j = self.size[j]
 
-        # Choose this path when `size_i >= size_j` is true.
         if size_i >= size_j:
             self.parent[lj] = li
             self.size[i] += self.size[j]
@@ -40,9 +38,9 @@ class UnionFind:
             self.parent[li] = lj
             self.size[j] += self.size[i]
 
+        # One successful merge replaces two components with one.
         self.num_components -= 1
 
-# Compute or update the main result for the supplied input.
 def main():
     n = 5
     edges = [[0, 1], [2, 3], [0, 4]]

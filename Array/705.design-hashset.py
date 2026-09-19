@@ -1,28 +1,24 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
-# Group the state and operations used by the design hashset implementation.
+# This wraps Python's built-in set rather than implementing buckets, hashing, or collision handling.
+# Membership, insertion, and removal are expected O(1); space grows with distinct stored keys.
 class MyHashSet:
 
-    # Initialize the state needed by a new instance.
     def __init__(self):
         self.hash_set = set()
 
-    # Compute or update the add result for the supplied input.
+    # Set insertion is idempotent: repeated adds should leave one copy of a key.
     def add(self, key: int) -> None:
-        # Choose this path when `key not in self.hash_set` is true.
         if key not in self.hash_set:
             self.hash_set.add(key)
 
         
 
-    # Compute or update the remove result for the supplied input.
+    # The membership guard makes removing an absent key a no-op instead of raising KeyError.
     def remove(self, key: int) -> None:
-        # Choose this path when `key in self.hash_set` is true.
         if key in self.hash_set:
             self.hash_set.remove(key)
 
-    # Compute or update the contains result for the supplied input.
+    # Report whether the key is currently stored; previous removals must be reflected.
     def contains(self, key: int) -> bool:
-        # Choose this path when `key in self.hash_set` is true.
         if key in self.hash_set:
             return True
         else:

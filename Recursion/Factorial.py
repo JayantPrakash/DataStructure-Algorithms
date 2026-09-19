@@ -1,10 +1,11 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
-# Compute or update the factorial result for the supplied input.
+# Reduce n! to n times (n-1)!; assumes a nonnegative integer.
 def factorial(n):
-    # Choose this path when `n == 0` is true.
+    # 0! is the empty product, equal to 1, and stops the recursive descent.
     if n == 0:
         return 1
     else:
+        # Multiplications happen while calls return; O(n) recursive calls and O(n) stack depth.
+        # For large n, integer multiplication costs and Python's recursion limit also matter.
         return n * factorial(n-1)
 
 

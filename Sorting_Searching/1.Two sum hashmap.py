@@ -1,17 +1,17 @@
-# Key idea: Track complements or pointer movement while avoiding repeated work.
-# Compute or update the two sum result for the supplied input.
+# Store previous values and ask whether the current value's complement was seen.
+# This returns existence, not indices; expected O(n) time and O(n) space.
 def two_sum(nums,target):
 
     my_set = set()
 
-    # Process each value from `range(len(nums))`.
     for i in range(len(nums)):
-        # Choose this path when `target - nums[i] in my_set` is true.
+        # Check before inserting so an element cannot pair with itself; a second equal value can form a valid pair.
         if target - nums[i] in my_set:
             return True
         else:
             my_set.add(nums[i])
 
+    # No complementary pair occurred among any of the distinct input positions.
     return False
 
 nums = [1,2,6,9,10]

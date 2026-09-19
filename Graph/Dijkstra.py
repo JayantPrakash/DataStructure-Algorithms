@@ -1,9 +1,6 @@
-# Key idea: Trace the priority queue as it selects the next shortest path.
 from heapq import heappush,heappop
-# Group the state and operations used by the Dijkstra implementation.
 class Graph:
 
-    # Initialize the state needed by a new instance.
     def __init__(self, vertices):
         self.V = vertices
         self.graph = [ [] for _ in range(vertices)]
@@ -15,27 +12,28 @@ class Graph:
         self.graph[u].append([w, v])
         self.graph[v].append([w, u])
 
-    # Compute or update the dijkstra result for the supplied input.
+    # With nonnegative weights, the cheapest queued path to an uncaptured node finalizes its distance.
+    # This lazy heap may hold O(E) candidate paths; typical time is O((V + E) log(E + 1)).
     def dijkstra(self, source):
         pq = []
+        # This implementation hard-codes vertex 0 as captured, so its initialization assumes source == 0.
+        # Captured/distance arrays persist on the instance; repeated independent runs do not reset them.
         self.captured[0] = 1
-        # Process each value from `self.graph[source]`.
         for cost, node,  in self.graph[source]:
             heappush(pq,(cost,(source,node)))
         self.distance[source] = 0
-        # Keep processing while `len(pq) != 0` remains true.
         while len(pq) != 0:
             cost, (parent,node) = heappop(pq)
-            # Choose this path when `self.captured[node] == 1` is true.
+            # Discard a stale path when another cheaper candidate already finalized this vertex.
             if self.captured[node] == 1:
                 continue
+            # The heap key is the full source-to-node path cost, not just the last edge weight.
             self.distance[node]= cost
             self.captured[node] = 1
 
-            # Process each value from `self.graph[node]`.
             for cost, neighbor in self.graph[node]:
-                # Choose this path when `self.captured[neighbor] == -1` is true.
                 if self.captured[neighbor] == -1:
+                    # Extend the finalized path by one edge; unreachable vertices retain distance -1.
                     heappush(pq,(cost + self.distance[node],(node,neighbor)))
 
         return self.distance

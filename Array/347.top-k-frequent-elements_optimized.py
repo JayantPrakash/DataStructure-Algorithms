@@ -1,33 +1,32 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 from typing import Optional, List
 import heapq
 
-# Group the state and operations used by the top k frequent elements optimized implementation.
 class Solution:
-    # Compute or update the top kfrequent result for the supplied input.
+    # Count values, then keep the k strongest frequencies in a bounded min-heap.
+    # For u distinct values: O(n + u log(k + 1)) time, O(u + k) space; assumes k <= u.
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
         dict_elem = {}
 
-        # Process each value from `range(len(nums))`.
+        # Count before ranking: the heap should contain one entry per distinct value.
         for i in range(len(nums)):
-            # Choose this path when `nums[i] in dict_elem` is true.
             if nums[i] in dict_elem:
                 dict_elem[nums[i]] = dict_elem[nums[i]] + 1
             else:
                 dict_elem[nums[i]] = 1
 
         h = []
-        # Process each value from `dict_elem.items()`.
         for key, val in dict_elem.items():
+            # Tuples compare frequency first; the smallest frequency is the easiest retained candidate to discard.
             heapq.heappush(h, (val,key))
 
-            # Choose this path when `len(h) > k` is true.
+            # Discard the weakest of k+1 candidates, leaving the k most frequent seen so far.
             if len(h) > k:
                 heapq.heappop(h)
 
         #for i in range(len(h)):
         #    print(h[i])
 
+        # Extract retained values; heap popping orders by frequency, not by the values themselves.
         result = [heapq.heappop(h)[1] for i in range(k)]        
         return result  
 

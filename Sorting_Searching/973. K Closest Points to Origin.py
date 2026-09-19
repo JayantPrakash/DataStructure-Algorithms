@@ -1,4 +1,3 @@
-# Key idea: Track how values move toward their final sorted positions.
 import heapq
 import math
 from typing import List
@@ -6,32 +5,31 @@ from typing import List
 import numpy as np
 
 
-# Group the state and operations used by the K Closest Points to Origin implementation.
 class Solution:
-    # Compute or update the k closest result for the supplied input.
+    # Keep k closest points in a max-heap simulated with negative distances.
+    # O(n log(k + 1)) time and O(k) space; assumes 1 <= k <= number of points.
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
         heap = []
         heapq.heapify(heap)
 
-        # Process each value from `points`.
         for point in points:
+            # Negation makes the farthest retained point the smallest heap key and therefore easiest to evict.
             point_dist = -1 * self.dist_calculate(point)
-            # Choose this path when `len(heap) < k` is true.
             if len(heap) < k:
                 heapq.heappush(heap, (point_dist, point))
             else:
-                # Choose this path when `point_dist > heap[0][0]` is true.
+                # A larger negative key means a smaller real distance, so this point improves the retained set.
                 if point_dist > heap[0][0]:
                     heapq.heappop(heap)
                     heapq.heappush(heap,(point_dist, point))
         output = []
-        # Process each value from `range(k)`.
+        # Pop retained points from farthest to closest; the returned order is not distance-ascending.
         for i in range(k):
             elem = heapq.heappop(heap)
             output.append(elem[1])
         return output
 
-    # Compute or update the dist calculate result for the supplied input.
+    # Euclidean distance uses sqrt(x^2+y^2); comparing squared distances would preserve the same ranking.
     def dist_calculate(self,point):
         return math.sqrt(point[0]**2 + point[1]**2)
 

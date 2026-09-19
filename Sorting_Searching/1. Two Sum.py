@@ -1,16 +1,15 @@
-# Key idea: Track complements or pointer movement while avoiding repeated work.
-# Compute or update the two sum result for the supplied input.
+# After sorting, move inward from the smallest/largest values: O(n log n) overall time.
 def twoSum(nums,target):
+    # This changes the caller's ordering, so returned positions refer to the sorted array.
     nums.sort()
     i = 0
     j = len(nums) - 1
 
-    # Keep processing while `i < j` remains true.
     while i < j:
-        # Choose this path when `nums[i] + nums[j] == target` is true.
         if nums[i] + nums[j] == target:
+            # Convert to one-based sorted positions; these are not original input indices.
             return [i+1,j+1]
-        # Choose this path when `nums[i] + nums[j] < target` is true.
+        # A sum below target can only improve by raising the smaller value; otherwise lower the larger one.
         elif nums[i] + nums[j] < target:
             i += 1
         else:

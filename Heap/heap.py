@@ -1,61 +1,53 @@
-# Key idea: Track heap ordering and which element is kept at the root.
-# Group the state and operations used by the heap implementation.
+# A zero-based complete binary tree stored in an array: each parent dominates both children.
+# heapSize counts live values; maxSize is allocated capacity, including unused slots.
 class MaxHeap:
     arr = []
     maxSize = 0
     heapSize = 0
 
-    # Initialize the state needed by a new instance.
     def __init__(self, maxsize):
         self.maxSize = maxsize
         self.heapSize = 0
         self.arr = [None] * maxsize
 
-    # Compute or update the left result for the supplied input.
     def left(self, i):
         return 2 * i + 1
 
-    # Compute or update the right result for the supplied input.
     def right(self, i):
         return 2 * i + 2
 
-    # Compute or update the parent result for the supplied input.
     def parent(self, i):
         return int((i - 1) / 2)
 
-    # Compute or update the max heapify result for the supplied input.
+    # Repair one downward violation assuming both child subtrees already satisfy max-heap order.
     def MaxHeapify(self, i):
         l = self.left(i)
         r = self.right(i)
 
         largest = i
 
-        # Choose this path when `self.heapSize == 0 or self.heapSize == 1` is true.
         if self.heapSize == 0 or self.heapSize == 1:
             return
 
-        # Choose this path when `l < self.heapSize and self.arr[l] > self.arr[largest]` is true.
         if l < self.heapSize and self.arr[l] > self.arr[largest]:
             largest = l
 
-        # Choose this path when `r < self.heapSize and self.arr[r] > self.arr[largest]` is true.
         if r < self.heapSize and self.arr[r] > self.arr[largest]:
             largest = r
 
-        # Choose this path when `largest != i` is true.
+        # Swap with the larger child, then repair only the subtree receiving the displaced value.
         if largest != i:
             temp = self.arr[i]
             self.arr[i] = self.arr[largest]
             self.arr[largest] = temp
             self.MaxHeapify(largest)
 
-    # Compute or update the remove max result for the supplied input.
+    # Replace the root with the last live element and sift down in O(log n).
+    # This version returns root only for a singleton; the multi-element branch currently returns None.
     def removeMax(self):
-        # Choose this path when `self.heapSize == 0` is true.
         if self.heapSize == 0:
             return None
         root = self.arr[0]
-        # Choose this path when `self.heapSize == 1` is true.
         if self.heapSize == 1:
             self.arr[0] = None
             self.heapSize -= 1
@@ -65,9 +57,8 @@ class MaxHeap:
         self.heapSize -= 1
         self.MaxHeapify(0)
 
-    # Compute or update the insert key result for the supplied input.
+    # Append at the next leaf and bubble upward while a parent is smaller: O(log n).
     def insertKey(self, x):
-        # Choose this path when `self.heapSize == self.maxSize` is true.
         if self.heapSize == self.maxSize:
             return 'Max elem reached'
 
@@ -75,26 +66,26 @@ class MaxHeap:
         i = self.heapSize - 1
         self.arr[i] = x
 
-        # Keep processing while `i != 0 and self.arr[self.parent(i)] < self.arr[i]` remains true.
         while i != 0 and self.arr[self.parent(i)] < self.arr[i]:
             temp = self.arr[self.parent(i)]
             self.arr[self.parent(i)] = self.arr[i]
             self.arr[i] = temp
             i = self.parent(i)
 
-    # Compute or update the cur size result for the supplied input.
     def curSize(self):
         return self.heapSize
 
-    # Compute or update the get max result for the supplied input.
+    # The heap invariant puts the maximum at index 0, giving O(1) access.
     def getMax(self):
         return self.arr[0]
 
-    # Compute or update the heap sort result for the supplied input.
+    # Intended heapsort needs a shrinking active heap and a root repair after each swap.
+    # This version keeps heapSize unchanged and heapifies i instead of 0, so it is not a correct general heapsort.
     def heapSort(self,arr):
         N = self.heapSize
 
         # Build a maxheap.
+        # Bottom-up construction works because leaves already satisfy the heap property.
         for i in range(N // 2 - 1, -1, -1):
             self.MaxHeapify(i)
 
@@ -107,7 +98,7 @@ if __name__ == '__main__':
     # Assuming the maximum size of the heap to be 15.
     h = MaxHeap(15)
 
-    # Asking the user to input the keys:
+    # The example inserts fixed values below; it does not read interactive input.
     k, i, n = 6, 0, 6
     print("Entered 6 keys:- 3, 10, 12, 8, 2, 14 \n")
     h.insertKey(3)
@@ -128,8 +119,6 @@ if __name__ == '__main__':
     print("The current maximum element is " + str(h.getMax())
           + "\n")
 
-    # Printing the size of the heap
-    # after deletion.
     print("The current size of the heap is "
           + str(h.curSize()) + "\n")
 

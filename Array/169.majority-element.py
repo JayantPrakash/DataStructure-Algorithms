@@ -1,20 +1,18 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 from typing import List
-# Group the state and operations used by the majority element implementation.
 class Solution:
-    # Compute or update the majority element result for the supplied input.
+    # Count occurrences until one value exceeds half the entire array length.
+    # Expected O(n) time and O(n) space; the problem guarantees a majority exists.
     def majorityElement(self, nums: List[int]) -> int:
         dict = {}
         n = len(nums)
-        # Process each value from `range(n)`.
         for i in range(n):
-            # Choose this path when `nums[i] not in dict` is true.
+            # First occurrences start at one; later occurrences increment the same counter.
             if nums[i] not in dict:
                 dict[nums[i]] = 1
             else:
                 dict[nums[i]] = dict[nums[i]] + 1
 
-            # Choose this path when `dict[nums[i]] > int(n / 2)` is true.
+            # A strict majority cannot be overtaken by all remaining values combined, so return immediately.
             if dict[nums[i]] >  int(n/2):
                 return nums[i]
 

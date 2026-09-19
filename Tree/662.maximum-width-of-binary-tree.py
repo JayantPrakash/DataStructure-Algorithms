@@ -1,50 +1,47 @@
-# Key idea: Track the current node, the chosen subtree, and the value returned upward.
 # Definition for a binary tree node.
 from typing import Optional
 from collections import deque
 
-# Group the state and operations used by the maximum width of binary tree implementation.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the maximum width of binary tree implementation.
 class Solution:
-    # Compute or update the width of binary tree result for the supplied input.
+    # Assign positions as if the tree were complete, so gaps between actual nodes count toward width.
+    # Only real nodes are enqueued; assumes a nonempty root.
     def widthOfBinaryTree(self, root: Optional[TreeNode]) -> int:
         q = deque()
+        # Use one-based positions: a parent's left and right children are 2*id and 2*id+1.
         q.append((root,1))
         max_val = 1    
-        # Keep processing while `len(q) != 0` remains true.
         while len(q) != 0:
             num_nodes = len(q)
             leftmost, rightmost, first = None, None, None
 
-            # Process each value from `range(num_nodes)`.
             for _ in range(num_nodes):
                 node, id = q.popleft()
 
-                # Choose this path when `node.left is not None` is true.
                 if node.left is not None:
                     q.append((node.left, 2*id))
 
-                # Choose this path when `node.right is not None` is true.
                 if node.right is not None:
                     q.append((node.right, 2*id+1))
 
-                # Choose this path when `first is None` is true.
+                # The first dequeued position is the leftmost at this depth because children are enqueued left first.
                 if first is None:
                     leftmost = id
                     first = id
             
+            # The last position consumed in this fixed-size level is its rightmost position.
             rightmost = id        
+            # Subtract endpoints and add one to include missing slots between them, not just actual node count.
             local_width = rightmost - leftmost + 1
-            # Choose this path when `max_val < local_width` is true.
             if max_val < local_width:
                 max_val = local_width    
 
+        # There are O(n) queue visits and O(w) entries; unnormalized positions can grow with tree depth.
+        # Python integers avoid overflow, but very deep position values are not constant-size integers.
         return max_val
 
 

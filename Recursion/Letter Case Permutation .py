@@ -1,8 +1,8 @@
-# Key idea: Trace each recursive choice, the base case, and the backtracking step.
 
 
 
-# Compute or update the letter case permutations result for the supplied input.
+# For an alphanumeric string, letters have two case choices and digits have one.
+# With a letters there are 2^a outputs, each of length n.
 def letter_case_permutations(s):
     """
     Args:
@@ -10,20 +10,20 @@ def letter_case_permutations(s):
     Returns:
      list_str
     """
-    # Write your code here.
 
     result = []
 
-    # Compute or update the lp helper result for the supplied input.
+    # i is the next character to decide; slate is an immutable prefix owned by this branch.
     def lp_helper(s, i, slate):
-        # Choose this path when `i >= len(s)` is true.
         if i >= len(s):
+            # Store the completed string. Output uses O(n * 2^a) space; live prefixes can add O(n^2) auxiliary space.
             result.append(slate)
         else:
-            # Choose this path when `s[i].isdigit()` is true.
+            # Digits pass through unchanged; branching on them would create duplicate outputs.
             if s[i].isdigit():
                 lp_helper(s,i+1,slate + s[i])
             else:
+                # Explore both cases independently; concatenation creates a new prefix, so no undo is required.
                 lp_helper(s, i + 1, slate + s[i].lower())
                 lp_helper(s, i + 1, slate + s[i].upper())
 
@@ -34,13 +34,6 @@ def letter_case_permutations(s):
 s = 'a1b2'
 print(letter_case_permutations(s))
 
-#s(n) = i/p + intermediate + o/p
-#ip -n, intermediate - storing in slate along one branch from root to leaf - 1+2+3+ + n = O(n^2)
-# o/p - O(2^n*n) - no of leaf nodes - 2^n, each leaf has length n.
-#S(n) - O(2^n*n)
 
-#T(n) - O(2^n-1* n) - *n as new string will be generated as we concatenate - internal node, leaf node
-# - O(2^n*1)
-#T(n) - O(2^n*n)
 
 

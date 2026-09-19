@@ -1,8 +1,8 @@
-# Key idea: Trace each recursive choice, the base case, and the backtracking step.
 
 
 
-# Compute or update the letter case permutations result for the supplied input.
+# For each letter choose lower or upper case; digits offer only one choice.
+# One shared slate uses O(n) working space; this version returns character lists, not joined strings.
 def letter_case_permutations(s):
     """
     Args:
@@ -10,29 +10,31 @@ def letter_case_permutations(s):
     Returns:
      list_str
     """
-    # Write your code here.
 
     result = []
     slate = []
-    # Compute or update the lp helper result for the supplied input.
     def lp_helper(s, i, slate):
-        # Choose this path when `i >= len(s)` is true.
         if i >= len(s):
+            # Copy each complete slate; storing the original list would let later pops erase saved answers.
             result.append(slate[:])
         else:
-            # Choose this path when `s[i].isdigit()` is true.
+            # Digits have no case variant, so take just one recursive branch.
             if s[i].isdigit():
                 slate.append(s[i])
                 lp_helper(s,i+1,slate)
+                # Undo the character added for this branch before exploring the next choice or returning.
                 slate.pop()
             else:
                 slate.append(s[i].lower())
                 lp_helper(s, i + 1, slate)
+                # Undo the character added for this branch before exploring the next choice or returning.
                 slate.pop()
                 slate.append(s[i].upper())
                 lp_helper(s, i + 1, slate)
+                # Undo the character added for this branch before exploring the next choice or returning.
                 slate.pop()
 
+    # Start with no decided characters; for a letters, output storage is O(n * 2^a).
     lp_helper(s,0,slate)
 
     return result
@@ -40,13 +42,6 @@ def letter_case_permutations(s):
 s = 'a1b2'
 print(letter_case_permutations(s))
 
-#s(n) = i/p + intermediate + o/p
-#ip -n, intermediate - O(n) - there is only one copy of slate
-# o/p - O(2^n*n) - no of leaf nodes - 2^n, each leaf has length n.
-#S(n) - O(2^n*n)
 
-#T(n) - O(2^n-1* 1) -  - internal node, leaf node - O(2^n*)n
-# - *n  as for each leaf node, slate is copied and added to result
-#T(n) - O(2^n*n)
 
 

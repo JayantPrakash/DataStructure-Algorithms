@@ -1,23 +1,20 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
-# Group the state and operations used by the valid parentheses implementation.
 class Solution:
-    # Compute or update the is valid result for the supplied input.
+    # A stack tracks unmatched opening brackets; closing brackets must match the most recent opener.
+    # This enforces nesting, not just equal counts; O(n) time and O(n) space.
     def isValid(self, s: str) -> bool:
         stack = []
-        # Choose this path when `len(s) == 1 or len(s) % 2 != 0` is true.
+        # A balanced bracket-only string has pairs, so an odd length is impossible.
         if len(s) == 1 or len(s) % 2 != 0: return False
         dict = {")": "(", "}":"{", "]":"["}
 
-        # Process each value from `s`.
         for c in s:
-            # Choose this path when `c == '(' or c == '{' or c == '['` is true.
+            # An opener postpones validation until its matching closer arrives.
             if c == "(" or c == "{" or c == "[":
                 stack.append(c)
                  
             else:
-                # Choose this path when `len(stack) > 0` is true.
                 if len(stack) > 0:
-                    # Choose this path when `stack[-1] == dict[c]` is true.
+                    # Only the top may close next; a mismatch or an empty stack makes the nesting invalid.
                     if stack[-1] == dict[c]:
                         stack.pop(-1)
                     else:
@@ -25,6 +22,7 @@ class Solution:
                 else:
                     return False             
 
+        # All openings must have been closed; leftover entries represent incomplete pairs.
         return len(stack) == 0
 
 s = "()"

@@ -1,21 +1,18 @@
-# Key idea: Trace each recursive choice, the base case, and the backtracking step.
-# Compute or update the binary string i result for the supplied input.
+# Enumerate all length-n binary strings by making two choices at each position.
 def binary_string_i(n):
     bs_helper(n, '')
 
 
-# Compute or update the bs helper result for the supplied input.
+# n is the number of positions left; slate is the prefix already chosen.
 def bs_helper(n, slate):
-    # Choose this path when `n == 0` is true.
+    # A complete prefix is a leaf; print it only after every position is assigned.
     if n == 0:
         print(slate)
     else:
+        # Explore both possible next bits. Immutable strings need no explicit backtracking.
+        # There are 2^n outputs of length n; printing takes O(n * 2^n), with O(n^2) retained prefix characters on a deep chain.
         bs_helper(n - 1, slate + '0')
         bs_helper(n - 1, slate + '1')
 
 
 (binary_string_i(3))
-#S(n) - O(n) - depth of tree
-#T(n) - 0(2^n)
-# Its a divide and conquer approach, every time manager will create 2 branches and it goes on.
-# Its a permutation problem where repetition is allowed.

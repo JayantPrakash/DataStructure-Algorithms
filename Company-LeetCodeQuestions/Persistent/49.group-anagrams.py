@@ -1,27 +1,26 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 from typing import defaultdict
-# Group the state and operations used by the group anagrams implementation.
 class Solution(object):
-    # Compute or update the group anagrams result for the supplied input.
+    # For lowercase a-z words, character counts identify anagrams regardless of letter order.
+    # Counting all characters is linear in input size; each word is placed into one signature bucket.
     def groupAnagrams(self, strs):
         """
         :type strs: List[str]
         :rtype: List[List[str]]
         """
-        # it creates dict with empty list, 
-        # not throw error in append
+        # A missing signature automatically gets an empty list, allowing its first word to be appended directly.
         res = defaultdict(list)
 
-        # Process each value from `strs`.
         for s in strs:
+            # Use a fresh 26-slot signature for each word; repeated letters must contribute repeatedly.
             count = [0] * 26
 
-            # Process each value from `s`.
             for c in s:
                 count[ord(c) - ord("a")] += 1
 
+            # Convert the mutable list to a hashable tuple so identical signatures share one dictionary key.
             res[tuple(count)].append(s)
 
+        # Return the grouped buckets as a dictionary-values view.
         return res.values()        
 
 strs = ["eat","tea","tan","ate","nat","bat"]   

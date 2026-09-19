@@ -1,17 +1,15 @@
-# Key idea: Track how values move toward their final sorted positions.
 import random
-# Compute or update the guess result for the supplied input.
+# The oracle returns -1 for a guess too high, +1 for too low, and 0 for an exact match.
 def guess(num,pick):
-    # Choose this path when `num > pick` is true.
     if num > pick:
         return -1
-    # Choose this path when `num < pick` is true.
     elif num < pick:
         return 1
     else:
         return 0
 
-# Compute or update the guess number result for the supplied input.
+# Maintain the inclusive candidate interval [start, end] and eliminate half after each oracle response.
+# For a pick inside 1..n, O(log n) guesses and O(1) space suffice.
 def guessNumber(n,pick):
     start = 1
     end = n
@@ -20,13 +18,13 @@ def guessNumber(n,pick):
     while start <= end:
         mid = int(start + (end-start)/2)
         guess_result = guess(mid,pick)
-        # Choose this path when `guess_result == 0` is true.
         if guess_result == 0:
             return mid
-        # Choose this path when `guess_result == 1` is true.
+        # Exclude mid and all smaller candidates because the hidden pick is larger.
         elif guess_result == 1:
             start = mid + 1
         else:
+            # A guess that is too high rules out mid and every larger candidate.
             end = mid - 1
     #return 1
 #print(guessNumber(2126753390,1702766719))

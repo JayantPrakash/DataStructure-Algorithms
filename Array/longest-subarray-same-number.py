@@ -1,18 +1,18 @@
-# Key idea: Track the active range and the condition that moves its boundaries.
-# Compute or update the max subarray same num result for the supplied input.
+# Track the current run of equal adjacent values, not a subsequence spread across the array.
+# The explicit window list uses O(n) worst-case space; the scan takes O(n) time.
 def max_subarray_same_num(nums):
     L = 0
     window = []
     max_length = 0
-    # Process each value from `range(len(nums))`.
     for R in range(len(nums)):
-        # Choose this path when `nums[L] == nums[R]` is true.
+        # Matching the run's first value extends the run; a mismatch starts a new run at R.
         if nums[L] == nums[R]:
             window.append(nums[R])
         else:
             L = R
             window = [nums[R]]
 
+        # Save the best run before later mismatches reset the current window.
         max_length = max(max_length, len(window))
 
     return max_length

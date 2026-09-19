@@ -1,30 +1,28 @@
-# Key idea: Track the search interval and the condition that discards half of it.
-# Compute or update the binary search rotated result for the supplied input.
+# The intended binary-search idea is to identify a sorted half and test whether target lies inside it.
+# This implementation does not consistently establish that invariant, so it can discard the correct half.
 def binary_search_rotated(nums, target):
-    # Replace this placeholder return statement with your code
     start = 0
     end = len(nums) - 1
 
-    # Keep processing while `start <= end` remains true.
     while start <= end:
         mid = start + int((end - start)/2)
 
-        # Choose this path when `nums[mid] == target` is true.
         if nums[mid] == target:
             return mid
-        # Choose this path when `nums[mid] < target` is true.
         elif nums[mid] < target:
-            # Choose this path when `nums[end] >= target and nums[mid + 1] < nums[mid]` is true.
+            # Checking only a drop immediately after mid does not identify every rotated partition.
+            # nums[mid+1] also requires a right neighbor and can be out of bounds.
             if nums[end] >= target and nums[mid+1] < nums[mid]:
+                # This discards the left half; correctness requires proving the target is in the right half first.
                 start = mid + 1
             else:
                 end = mid - 1
         else:
-            # Choose this path when `nums[start] > target` is true.
             if nums[start] > target:
                 start = mid + 1
             else:
                 end = mid - 1
+    # The interval has been exhausted, but the branch limitations above can produce false negatives.
     return -1
 
 nums = [6,7,1,2,3,4,5]

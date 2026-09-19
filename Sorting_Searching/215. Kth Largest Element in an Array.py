@@ -1,23 +1,22 @@
-# Key idea: Track heap ordering and which element is kept at the root.
 import heapq
 from typing import List
 
 
-# Group the state and operations used by the Kth Largest Element in an Array implementation.
 class Solution:
-    # Compute or update the find kth largest result for the supplied input.
+    # Maintain the k largest values in a min-heap; its root is the weakest retained value.
+    # O(n log(k + 1)) time and O(k) space; assumes 1 <= k <= len(nums).
     def findKthLargest(self, nums: List[int], k: int) -> int:
         heap = []
         heapq.heapify(heap)
-        # Process each value from `nums`.
         for num in nums:
-            # Choose this path when `len(heap) < k` is true.
+            # Fill the candidate heap before applying any rejection threshold.
             if len(heap) < k:
                 heapq.heappush(heap, num)
             else:
-                # Choose this path when `num > heap[0]` is true.
+                # Only a value above the current kth largest can improve the retained top k; smaller values are irrelevant.
                 if num > heap[0]:
                     heapq.heappop(heap)
                     heapq.heappush(heap, num)
+        # Duplicates count separately, so this is kth by occurrence rather than kth distinct value.
         return heap[0]
 

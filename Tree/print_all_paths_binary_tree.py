@@ -1,21 +1,17 @@
-# Key idea: Trace the recursive or explicit-stack depth-first traversal and its return values.
 # Definition for a binary tree node.
 from typing import List, Optional
 from collections import deque
 
-# Group the state and operations used by the print all paths binary tree implementation.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the print all paths binary tree implementation.
 class Solution:
-    # Compute or update the print all paths result for the supplied input.
+    # Enumerate root-to-leaf paths with one shared slate and backtracking.
+    # O(n + P) time for n visits plus P copied output values; O(h) working space.
     def print_all_paths(self, root: Optional[TreeNode]) -> List[List[int]]:
         
-        # Choose this path when `root is None` is true.
         if root is None:
             return []
         
@@ -24,23 +20,23 @@ class Solution:
         self.dfs(root, [])
         return self.result
 
-    # Traverse the reachable structure using DFS.
     def dfs(self, node, slate):
 
+        # Choose: extend the root-to-parent path with this node.
         slate.append(node.val)
 
-        # Choose this path when `node.left is None and node.right is None` is true.
+        # Only a node with no children completes a root-to-leaf path.
         if node.left is None and node.right is None:
+            # Snapshot the path; appending the shared slate itself would let later mutations corrupt saved answers.
             self.result.append(slate[:])
 
-        # Choose this path when `node.left is not None` is true.
         if node.left is not None:
             self.dfs(node.left, slate)  
 
-        # Choose this path when `node.right is not None` is true.
         if node.right is not None:
             self.dfs(node.right, slate)       
 
+        # Unchoose after both children to restore the caller's path before it explores a sibling.
         slate.pop()           
     
 

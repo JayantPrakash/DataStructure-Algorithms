@@ -1,55 +1,47 @@
-# Key idea: Track the current node, the chosen subtree, and the value returned upward.
 # Definition for a binary tree node.
 from typing import List, Optional
 from collections import deque
 
-# Group the state and operations used by the cousins in binary tree implementation.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the cousins in binary tree implementation.
 class Solution:
-    # Compute or update the is cousins result for the supplied input.
+    # Cousins are at the same depth but have different parents; siblings must be rejected.
+    # BFS checks both properties in O(n) time and O(w) space; assumes a nonempty root and unique values.
     def isCousins(self, root: Optional[TreeNode], x: int, y: int) -> bool:  
         q = deque()
         q.append(root)
-        # Keep processing while `len(q) != 0` remains true.
         while len(q) != 0:
             len_q = len(q)
+            # Reset both parent records each level so discoveries at different depths cannot be combined.
             parent_x = None
             parent_y = None
 
-            # Process each value from `range(len_q)`.
             for _ in range(len_q):
                 node = q.popleft()
 
-                # Choose this path when `node.left is not None` is true.
                 if node.left is not None:
                     q.append(node.left)
-                    # Choose this path when `node.left.val == x` is true.
+                    # Record the parent while examining its children; all children in this batch share the next depth.
                     if node.left.val == x:
                         parent_x = node
-                    # Choose this path when `node.left.val == y` is true.
                     if node.left.val == y:
                         parent_y = node   
             
-                # Choose this path when `node.right is not None` is true.
                 if node.right is not None:
                     q.append(node.right)
-                    # Choose this path when `node.right.val == x` is true.
                     if node.right.val == x:
                         parent_x = node
-                    # Choose this path when `node.right.val == y` is true.
                     if node.right.val == y:
                         parent_y = node   
             
-            # Choose this path when `parent_x is not None and parent_y is not None and (parent_x != parent_y)` is true.
+            # Both targets were found among this level's children, and their parent identities differ.
             if (parent_x is not None) and (parent_y is not None) and parent_x != parent_y:
                 return True
         
+        # The root has no parent and cannot be a cousin; unmatched depths or equal parents never satisfy the test.
         return False                       
                 
 sol = Solution()

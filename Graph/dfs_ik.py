@@ -1,35 +1,33 @@
-# Key idea: Trace the recursive or explicit-stack depth-first traversal and its return values.
 from collections import defaultdict
 from collections import deque
 
 
-# Group the state and operations used by the dfs ik implementation.
 class Graph():
     #def __int__(self, n):
     #    self.visited = [-1] * n
 
+    # Represent an undirected graph by recording each edge in both adjacency lists.
     def createAdjacencyList(self, n, edges):
         adjList = [[] for _ in range(n)]
-        # Process each value from `edges`.
         for (src, dst) in edges:
             adjList[src].append(dst)
             adjList[dst].append(src)
         return adjList
 
-    # Compute or update the dfs helper result for the supplied input.
+    # Reset traversal state for this call; only the source's connected component will be visited.
     def dfs_helper(self,n,edges, source):
         self.adjList = self.createAdjacencyList(n,edges)
         self.visited = [-1] * n
         self.dfs(source)
 
-    # Traverse the reachable structure using DFS.
+    # Recursion explores one neighbor's entire reachable branch before resuming the next neighbor.
+    # Visited checks give O(V + E) time; the recursion stack can grow to O(V).
     def dfs(self, u):
         n = len(self.adjList)
+        # Mark before descending so cycles cannot lead back into an active or completed vertex.
         self.visited[u] = 1
         print(u)
-        # Process each value from `self.adjList[u]`.
         for neighbour in self.adjList[u]:
-            # Choose this path when `self.visited[neighbour] == -1` is true.
             if self.visited[neighbour] == -1:
                 self.dfs(neighbour)
 

@@ -1,23 +1,23 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
 from typing import List
-# Group the state and operations used by the remove element implementation.
 class Solution:
-    # Compute or update the remove element result for the supplied input.
+    # Remove matches by shifting the list and appending a placeholder to keep its length fixed.
+    # Repeated pop(i) shifts can make this O(n^2); the final slice also allocates O(n) space.
     def removeElement(self, nums: List[int], val: int) -> int:
         ans = 0
         len_list = len(nums)
         i = 0
-        # Keep processing while `i < len_list` remains true.
         while i < len_list:
-            # Choose this path when `val == nums[i]` is true.
+            # Do not advance i after removal: the next unexamined value has shifted into this index.
             if val == nums[i]:
                 nums.pop(i)
                 nums.append("_")
             else: 
-                # Choose this path when `nums[i] != '_'` is true.
+                # Count surviving values but exclude padding; the input is assumed to contain integers.
                 if nums[i] != "_":  
                     ans += 1
                 i += 1
+        # This slice rebinds only the local name; it does not shorten the caller's already-mutated list.
+        # It also includes an extra slot; callers should use the returned survivor count.
         nums = nums[0:ans+1]        
 
         return ans  

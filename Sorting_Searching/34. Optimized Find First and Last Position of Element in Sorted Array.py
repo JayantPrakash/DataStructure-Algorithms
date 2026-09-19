@@ -1,5 +1,5 @@
-# Key idea: Track how values move toward their final sorted positions.
-# Compute or update the search result for the supplied input.
+# Run two boundary searches on sorted input: lower bound then upper bound.
+# Each discards half the remaining interval, giving O(log n) time and O(1) space.
 def search(nums, target):
     """
     :type nums: List[int]
@@ -9,10 +9,9 @@ def search(nums, target):
     start = 0
     end = len(nums) - 1
 
-    # Keep processing while `start <= end` remains true.
     while start <= end:
         mid = start + int((end - start)/2)
-        # Choose this path when `nums[mid] < target` is true.
+        # Equality moves left too, so start converges to the first value >= target.
         if nums[mid] < target:
             start = mid + 1
         else:
@@ -20,20 +19,20 @@ def search(nums, target):
 
     first = start
 
-    # Choose this path when `start == len(nums) or nums[start] != target` is true.
+    # A lower bound can be past the end or point to a larger value; validate target existence.
     if start == len(nums) or nums[start] != target:
         return [-1,-1]
 
     end = len(nums) - 1
-    # Keep processing while `start <= end` remains true.
     while start <= end:
         mid = start + int((end - start) / 2)
-        # Choose this path when `nums[mid] <= target` is true.
+        # Now equality moves right: start becomes the first value > target, and end the last <= target.
         if nums[mid] <= target:
             start = mid + 1
         else:
             end = mid - 1
 
+    # Because target existence was confirmed, these two boundaries enclose exactly its duplicate run.
     return [first,end]
 
 array = [5,7,7,8,8,10]

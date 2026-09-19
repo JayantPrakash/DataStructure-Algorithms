@@ -1,46 +1,39 @@
-# Key idea: Trace the recursive or explicit-stack depth-first traversal and its return values.
 # Definition for a binary tree node.
 from typing import List, Optional
 from collections import deque
 
-# Group the state and operations used by the maximum depth of binary tree implementation.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the maximum depth of binary tree implementation.
 class Solution:
-    # Compute or update the max depth result for the supplied input.
+    # Maximum depth is the number of nonempty levels; this implementation counts them with BFS.
+    # O(n) time and O(w) queue space; an empty tree has depth zero.
     def maxDepth(self, root: Optional[TreeNode]) -> int:
-        # Choose this path when `root is None` is true.
         if root is None:
             return 0
-        max_depth = 0
+        level = 0
         q = deque()
         q.append(root)
         len_q = len(q)
 
-        # Keep processing while `len(q) != 0` remains true.
         while len(q) != 0:
             len_q = len(q)
-
-            # Process each value from `range(len_q)`.
+            # Increment once per level, not per node: all nodes in this batch share the same depth.
+            level += 1
+            # Only consume nodes present when the batch began; enqueued children belong to the next depth.
             for _ in range(len_q):
                 node = q.popleft()
 
-                # Choose this path when `node.left is not None` is true.
                 if node.left is not None:
                     q.append(node.left)
 
-                # Choose this path when `node.right is not None` is true.
                 if node.right is not None:
                     q.append(node.right)
-            
-            max_depth += 1
         
-        return max_depth       
+        # When the queue empties, the number of completed batches is the deepest root-to-leaf node count.
+        return level       
 
 sol = Solution()
 root = TreeNode(1)

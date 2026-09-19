@@ -1,15 +1,13 @@
-# Key idea: Trace the recursive or explicit-stack depth-first traversal and its return values.
 from typing import Optional
 # Definition for a binary tree node.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the diameter of binary tree implementation.
 class Solution:
-    # Compute or update the diameter of binary tree result for the supplied input.
+    # The diameter is the longest path between any two nodes, measured in edges; it need not pass through root.
+    # Postorder visits each node once: O(n) time and O(h) stack space; this version assumes a nonempty root.
     def diameterOfBinaryTree(self, root: Optional[TreeNode]) -> int:
         self.global_dia = 0
 
@@ -17,10 +15,9 @@ class Solution:
 
         return self.global_dia
     
-    # Traverse the reachable structure using DFS.
+    # Return downward height in edges, not diameter; a leaf returns zero.
     def dfs(self, node):
 
-        # Choose this path when `node.left is None and node.right is None` is true.
         if node.left is None and node.right is None:
             return 0
         
@@ -28,20 +25,21 @@ class Solution:
         left_dia = 0
         right_dia = 0
 
-        # Choose this path when `node.left is not None` is true.
         if node.left is not None:
             left_dia = self.dfs(node.left)
+            # A present left branch contributes its height plus the edge from this node to that child.
             local_dia = left_dia + 1
 
-        # Choose this path when `node.right is not None` is true.
         if node.right is not None:
             right_dia = self.dfs(node.right)
+            # Join the two downward branches through this node to form its candidate diameter.
             local_dia += right_dia + 1
 
-        # Choose this path when `self.global_dia < local_dia` is true.
+        # Update the best two-branch path across all nodes, including those below the root.
         if self.global_dia < local_dia:
             self.global_dia = local_dia
 
+        # Only one branch can extend upward to the parent, so return the longer branch plus one edge.
         return max(left_dia, right_dia) + 1
 
 

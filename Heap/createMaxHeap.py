@@ -1,21 +1,24 @@
-# Key idea: Track heap ordering and which element is kept at the root.
 # insert one element in heap
+# Sift up: save the inserted value, shift violating ancestors down, then fill the final hole.
+# For a max-heap, a larger value moves toward the root; one insertion takes O(log n).
 def insert(A, n):
     i = n
     temp = A[n]
 
-    # Keep processing while `i > 0 and temp > A[int(i / 2)]` remains true.
+    # This code uses i // 2 for the parent; standard zero-based heaps use (i - 1) // 2.
+    # With ordinary zero-based arrays, that convention can miss the actual parent.
     while i > 0 and temp > A[int(i / 2)]:
         A[i] = A[int(i / 2)]
         i = int(i / 2)
 
+    # Place the saved value once its chosen ancestor chain no longer violates the comparison.
     A[i] = temp
     return A
 
 
-# Compute or update the create heap result for the supplied input.
+# Repeated insertion grows a heap prefix, costing O(n log n) time and O(1) auxiliary space.
+# The parent-index caveat above applies to the whole construction.
 def createHeap(A):
-    # Process each value from `range(1, len(A))`.
     for i in range(1, len(A)):
         A = insert(A, i)
 
@@ -25,7 +28,3 @@ def createHeap(A):
 array = [10, 20, 30, 25, 5, 40, 35]
 
 print(createHeap(array))
-
-#T(n) = O(nlogn)
-#S(n) = O(n)
-#here creating the max heap is inplace that means no extra array is required.

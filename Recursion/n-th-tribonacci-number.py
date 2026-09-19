@@ -1,15 +1,13 @@
-# Key idea: Track how each state reuses results from smaller subproblems.
-# Group the state and operations used by the n th tribonacci number implementation.
 class Solution:
-    # Compute or update the tribonacci result for the supplied input.
+    # Use T(n) = T(n-1) + T(n-2) + T(n-3), with seeds 0, 1, 1 for nonnegative n.
     def tribonacci(self, n: int) -> int:
-        # Choose this path when `n <= 1` is true.
         if n <=1:
             return n
-        # Choose this path when `n == 2` is true.
+        # This third seed prevents recursion from falling into negative indices.
         if n == 2:
             return 1
         
+        # Repeated states are recomputed without caching: exponential time (O(3^n) upper bound), O(n) stack depth.
         return self.tribonacci(n-1) + self.tribonacci(n-2) + self.tribonacci(n-3)   
     
     

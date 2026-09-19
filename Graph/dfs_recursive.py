@@ -1,34 +1,30 @@
-# Key idea: Trace the recursive or explicit-stack depth-first traversal and its return values.
 from collections import defaultdict
 from collections import deque
 
-# Group the state and operations used by the dfs recursive implementation.
 class Graph:
-    # Initialize the state needed by a new instance.
     def __init__(self):
         self.graph = defaultdict(list)
         self.visited = {}
 
-    # Record an edge in the graph representation.
+    # Store only u -> v; this adjacency mapping describes a directed graph.
     def addEdge(self,u,v):
         self.graph[u].append(v)
 
-    # Traverse the reachable structure using DFS.
+    # Mark the current vertex, then fully explore each still-unseen outgoing branch.
+    # Expected O(V + E) time and O(V) stack space; visited persists across calls on this instance.
     def dfs(self,u):
         #visited = {}
         self.visited[u] = True
         print(u)
-        # Process each value from `self.graph[u]`.
         for v in self.graph[u]:
-            # Choose this path when `v not in self.visited` is true.
+            # Skip active and completed vertices alike so directed cycles cannot recurse indefinitely.
             if v not in self.visited:
                 self.dfs(v)
 
-    # Compute or update the print vert result for the supplied input.
+    # Display the stored outgoing adjacency lists.
     def print_vert(self):
         #print(self.graph.keys())
         vert = []
-        # Process each value from `self.graph.items()`.
         for item in self.graph.items():
             print(item[0],item[1])
 

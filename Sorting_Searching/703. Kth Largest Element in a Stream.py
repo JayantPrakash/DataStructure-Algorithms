@@ -1,31 +1,29 @@
-# Key idea: Track heap ordering and which element is kept at the root.
 from typing import List
 import heapq
 
 
-# Group the state and operations used by the Kth Largest Element in a Stream implementation.
+# The intended invariant is a min-heap of the k largest stream values; its root is kth largest.
 class KthLargest:
 
-    # Initialize the state needed by a new instance.
     def __init__(self, k: int, nums: List[int]):
         self.k = k
+        # Copy the first k candidates so heap operations do not rearrange the original input list.
         self.heap = nums[0:k]
         heapq.heapify(self.heap)
         left_nums = nums[k:]
-        # Process each value from `left_nums`.
         for num in left_nums:
-            # Choose this path when `num > self.heap[0]` is true.
+            # Once full, replace the weakest retained value only when a larger candidate arrives.
             if num > self.heap[0]:
                 heapq.heappop(self.heap)
                 heapq.heappush(self.heap, num)
 
-    # Compute or update the add result for the supplied input.
+    # For a full heap this performs a bounded-heap update in O(log(k + 1)) time.
     def add(self, val: int) -> int:
-        # Choose this path when `len(self.heap) < self.k` is true.
         if len(self.heap) < self.k:
             heapq.heappush(self.heap, val)
 
-        # Choose this path when `val > self.heap[0]` is true.
+        # This is a second independent if: after an underfilled-heap insertion, it can insert val again.
+        # That can discard a valid earlier value and duplicate the new one; the underfilled case is not generally correct.
         if val > self.heap[0]:
             heapq.heappop(self.heap)
             heapq.heappush(self.heap, val)

@@ -1,5 +1,5 @@
-# Key idea: Track how values move toward their final sorted positions.
-# Compute or update the search result for the supplied input.
+# Find the upper bound: the first sorted letter strictly greater than target.
+# O(log n) time and O(1) space; the letter list must be nonempty.
 def search(nums, target):
     """
     :type nums: List[int]
@@ -9,16 +9,16 @@ def search(nums, target):
     start = 0
     end = len(nums) - 1
 
-    # Keep processing while `start <= end` remains true.
     while start <= end:
         mid = start + int((end - start)/2)
 
-        # Choose this path when `nums[mid] <= target` is true.
+        # Skip equal letters as well as smaller ones because the answer must be strictly greater.
         if nums[mid] <= target:
             start = mid + 1
         else:
             end = mid - 1
 
+    # If start reaches n, modulo wraps to index zero as the problem requires.
     return nums[start % len(nums)]
 letters = ["c","f","j"]
 letters = ["x","x","y","y"]

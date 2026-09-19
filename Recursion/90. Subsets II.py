@@ -1,7 +1,6 @@
-# Key idea: Trace each recursive choice, the base case, and the backtracking step.
-# Group the state and operations used by the Subsets II implementation.
 class Solution(object):
-    # Compute or update the subsets with dup result for the supplied input.
+    # Sort to group equal values, then decide how many copies of each value to include.
+    # This avoids duplicate subsets; sorting mutates nums and output can still be exponential.
     def subsetsWithDup(self, nums):
         """
         :type nums: List[int]
@@ -12,29 +11,27 @@ class Solution(object):
         self.helper(nums,0,[])
         return self.result
 
-    # Compute or update the helper result for the supplied input.
     def helper(self, S, i, slate):
-        # Choose this path when `i == len(S)` is true.
         if i == len(S):
+            # Copy the completed subset so later restoration does not alter saved answers.
             self.result.append(slate[:])
             return
+        # Measure the run of equal values starting at i; one recursion level decides the whole run.
         count = 0
-        # Process each value from `range(i, len(S))`.
         for index in range(i,len(S)):
-            # Choose this path when `S[index] != S[i]` is true.
             if S[index]!= S[i]:
                 break
             count += 1
 
+        # Choose zero copies, and let the next call decide the next distinct value.
         self.helper(S, i + count, slate)
-        # manager will decide all the duplicate items of one type and pass them to subordinate,
-        #subordinate will take decision on other items
+        # Append one additional copy per iteration to explore choices of 1 through count copies.
         for c in range(0,count):
             slate.append(S[i])
             self.helper(S,i+count,slate)
 
-        # Process each value from `range(0, count)`.
         for c in range(0,count):
+            # Remove all copies added at this level to restore the caller's slate.
             slate.pop()
 
 
@@ -42,5 +39,3 @@ class Solution(object):
 sol = Solution()
 nums = [1,2,2]
 print(sol.subsetsWithDup(nums))
-
-# space and time complexity will be same as subsets with mutable slate

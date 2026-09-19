@@ -1,4 +1,3 @@
-# Key idea: Trace the recursive or explicit-stack depth-first traversal and its return values.
 """
 Question:
 Given the roots of two binary trees p and q, write a function to 
@@ -11,16 +10,14 @@ are structurally identical, and the nodes have the same value.
 from collections import deque
 
 from build_tree import build_tree
-# Group the state and operations used by the is same dfs optimized implementation.
 class TreeNode(object):
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the is same dfs optimized implementation.
 class Solution(object):
-    # Compute or update the is same tree result for the supplied input.
+    # Compare corresponding nodes: equality requires both matching values and matching left/right structure.
+    # O(n) time for matching trees and O(h) recursion space, where h is tree height.
     def isSameTree(self, p, q):
         """
         :type p: Optional[TreeNode]
@@ -28,12 +25,14 @@ class Solution(object):
         :rtype: bool
         """
 
-        # Choose this path when `not p and (not q)` is true.
+        # Two absent subtrees match, including the case of two empty trees.
         if not p and not q:
             return True
         
-        # Choose this path when `p and q and (p.val == q.val)` is true.
+        # Both nodes must exist and have equal values before their corresponding children can match.
         if p and q and p.val==q.val:
+            # Combine left and right equality; and short-circuits as soon as the left comparison fails.
+            # The value comparison is equality, even though the unchanged notes below contain a != typo.
             return self.isSameTree(p.left,q.left) and self.isSameTree(p.right, q.right) 
         else:
             return False

@@ -1,14 +1,12 @@
-# Key idea: Track the current node, the chosen subtree, and the value returned upward.
 # Definition for a binary tree node.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the count good nodes in binary tree implementation.
 class Solution:
-    # Compute or update the good nodes result for the supplied input.
+    # A node is good when no ancestor on its own root-to-node path has a larger value.
+    # This version assumes a nonempty root and explicitly stores that path.
     def goodNodes(self, root: TreeNode) -> int:
 
         self.count_good_nodes = 0
@@ -17,22 +15,22 @@ class Solution:
 
         return self.count_good_nodes
     
-    # Traverse the reachable structure using DFS.
     def dfs(self, node, slate):
+        # Extend the path for this node; child calls must remove their own additions before returning.
         slate.append(node.val)
 
-        # Choose this path when `node.left is not None` is true.
         if node.left is not None:
             self.dfs(node.left, slate)
 
-        # Choose this path when `node.right is not None` is true.
         if node.right is not None:
             self.dfs(node.right, slate)
 
-        # Choose this path when `node.val >= max(slate)` is true.
+        # After children backtrack, slate again contains only this node and its ancestors.
+        # Scanning max(slate) at every node costs O(nh), up to O(n^2); a carried path maximum would avoid rescanning.
         if node.val >= max(slate):
             self.count_good_nodes += 1
 
+        # Restore the parent's path so sibling branches do not see each other's values.
         slate.pop()            
 
 sol = Solution()

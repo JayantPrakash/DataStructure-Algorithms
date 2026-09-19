@@ -1,15 +1,11 @@
-# Key idea: Track heap ordering and which element is kept at the root.
-# Compute or update the heapify result for the supplied input.
+# Intended bottom-up max-heap construction: repair each internal node by sifting downward.
+# This implementation reads A[j+1] without checking that the right child is inside the active heap.
 def heapify(A,n):
-    # first non element is n/2 - 1, if n is total no of elements
     for i in range(int(n/2) -1, -1, -1):
         j = 2*i + 1    
-        # Keep processing while `j < n` remains true.
         while (j<n):
-            # Choose this path when `A[j] < A[j + 1]` is true.
             if A[j] < A[j+1]:
                 j += 1
-            # Choose this path when `A[i] < A[j]` is true.
             if A[i] < A[j]:
                 A[i], A[j] = A[j], A[i]
                 i = j    
@@ -18,14 +14,14 @@ def heapify(A,n):
                 break     
     return A
 
-# Compute or update the delete heap result for the supplied input.
+# Move the root maximum to boundary n, then attempt to repair the remaining prefix.
 def delete_heap(A,n):
     i = 0
     j = 1
     val = A[0]
     #swap first and last element
     A[i],A[n] = A[n],A[i]
-    # check if it is less than n-1 as we have decreased size of heap by 1 
+    # This bound can skip a final lone left child; a correct sift-down must handle that child too.
     while (j<n-1):
         # find which child is greater
         if A[j] < A[j+1]:
@@ -41,9 +37,11 @@ def delete_heap(A,n):
     return val
 
 
-# Compute or update the heap sort result for the supplied input.
+# The intended algorithm builds a heap once, then shrinks it after each maximum extraction.
 def heapSort(A):
 
+    # This passes the last index, while heapify's bounds resemble a count; boundary conventions need care.
+    # The existing off-by-one behavior is retained here.
     A = heapify(A,len(A)-1)
     print("after heapify::", A)
     # range is from len-1 to 1

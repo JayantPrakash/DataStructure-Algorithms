@@ -1,19 +1,17 @@
-# Key idea: Trace the queue one breadth-first level at a time.
 from collections import deque
 
-# Group the state and operations used by the bfs ik implementation.
 class Graph:
 
-    # Compute or update the create adjacency list result for the supplied input.
+    # Use integer-indexed adjacency lists; add each undirected edge at both endpoints.
     def createAdjacencyList(self, n, edges):
         adjList = [[] for _ in range(n)]
-        # Process each value from `edges`.
         for (src, dst) in edges:
             adjList[src].append(dst)
             adjList[dst].append(src)
         return adjList
 
-    # Traverse the reachable structure using BFS.
+    # A FIFO queue visits the source's component in increasing unweighted distance.
+    # O(V + E) traversal time and O(V) visited/frontier space.
     def bfs(self, source, adjList):
         n = len(adjList)
         visited = [-1] * n
@@ -21,14 +19,14 @@ class Graph:
         queue.append(source)
         visited[source] = 1
 
-        # Keep processing while `len(queue) != 0` remains true.
         while len(queue) != 0:
+            # Remove the oldest discovered vertex, so all earlier-distance work stays ahead of deeper work.
             node = queue.popleft()
             print(node)
             #visited[node] = 1
             for neighbor in adjList[node]:
-                # Choose this path when `visited[neighbor] == -1` is true.
                 if visited[neighbor] == -1:
+                    # Reserve a vertex as soon as it is enqueued; cycles and shared neighbors cannot duplicate it.
                     visited[neighbor] = 1
                     queue.append(neighbor)
 

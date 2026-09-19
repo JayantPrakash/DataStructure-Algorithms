@@ -9,32 +9,29 @@ class TreeNode:
         self.left = left
         self.right = right
 
-
 class Solution:
-    # Traverse the tree level by level using breadth-first search (BFS).
+    # Use a FIFO queue to visit parents before descendants, producing one flat BFS sequence.
+    # O(n) time and O(w) queue space, plus O(n) output; the annotation suggests nested lists but the result is flat.
     def bfs(self, root: Optional[TreeNode]) -> List[List[int]]:
         result = []
 
-        # An empty tree has no values to return.
+        # An empty input returns immediately; the while behaves as a one-time guard because its body returns.
         while root is None:
             return []
 
-        # The queue stores nodes that still need to be visited.
         q = deque()
         q.append(root)
 
-        # Continue until every reachable node has been processed.
         while len(q) != 0:
-            # Remove the oldest node so nodes are processed 
-            # from left to right.
+            # Process the oldest discovered node first; children are scheduled after all earlier frontier nodes.
             node = q.popleft()
             result.append(node.val)
 
-            # Add the left child to the queue if it exists.
+            # Enqueue left before right so values within each depth appear left-to-right.
             if node.left is not None:
                 q.append(node.left)
 
-            # Add the right child to the queue if it exists.
+            # The right child follows its left sibling; no visited set is needed for an acyclic tree.
             if node.right is not None:
                 q.append(node.right)
 

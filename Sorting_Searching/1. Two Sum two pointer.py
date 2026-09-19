@@ -1,6 +1,6 @@
-# Key idea: Track complements or pointer movement while avoiding repeated work.
 
-# Compute or update the two sum result for the supplied input.
+# Sort values and move two pointers toward the target, then try to recover original indices.
+# Sorting mutates numbers and dominates the expected O(n log n) time.
 def two_sum(numbers, target):
     """
     Args:
@@ -9,11 +9,10 @@ def two_sum(numbers, target):
     Returns:
      list_int32
     """
-    # Write your code here.
     #nums = numbers.copy()
     hashmap = {}
-    # Process each value from `range(len(numbers))`.
     for i in range(len(numbers)):
+        # Only the last original index per value survives; this loses separate indices for duplicate values.
         hashmap[numbers[i]] = i
 
     numbers.sort()
@@ -23,12 +22,10 @@ def two_sum(numbers, target):
     low = 0
     high = n - 1
     result = [-1,-1]
-    # Keep processing while `low != high` remains true.
     while(low != high):
-        # Choose this path when `numbers[low] + numbers[high] > target` is true.
+        # A high sum needs a smaller right value; a low sum needs a larger left value.
         if numbers[low] + numbers[high] > target:
             high -= 1
-        # Choose this path when `numbers[low] + numbers[high] < target` is true.
         elif numbers[low] + numbers[high] < target:
             low += 1
         else:
@@ -38,13 +35,14 @@ def two_sum(numbers, target):
     #print(low,high)
     #print(hashmap)
     if result != [-1,-1]:
-        # Choose this path when `len(np.unique(numbers)) == 1` is true.
+        # This special case handles all-equal arrays, but not equal-value pairs in otherwise mixed arrays.
         if len(np.unique(numbers)) == 1:
             return [high -1, high]
-        # Choose this path when `low == high` is true.
         elif low == high:
             return [high-1,high]
         else:
+            # If both matched values are equal, this can return the same original index twice.
+            # The algorithm therefore does not correctly recover distinct indices for every duplicate case.
             return [hashmap[numbers[low]],hashmap[numbers[high]]]
     else:
         return result

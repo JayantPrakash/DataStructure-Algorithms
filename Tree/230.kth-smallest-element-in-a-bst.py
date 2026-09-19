@@ -1,29 +1,27 @@
-# Key idea: Track the current node, the chosen subtree, and the value returned upward.
 from typing import Optional
 # Definition for a binary tree node.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the kth smallest element in a bst implementation.
 class Solution:
-    # Compute or update the kth smallest result for the supplied input.
+    # Inorder traversal of a BST produces values in sorted order; select index k-1.
+    # Assumes a nonempty valid BST and 1 <= k <= node count.
     def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
         self.nodes_val = []
+        # This version collects all n values instead of stopping at the kth: O(n) time and O(n) result storage.
         self.dfs(root)
+        # Convert the one-based rank to a zero-based list index.
         return self.nodes_val[k-1]
 
-    # Traverse the reachable structure using DFS.
     def dfs(self, node):
 
-        # Choose this path when `node.left is not None` is true.
         if node.left is not None:
             self.dfs(node.left)
+        # The left subtree has already contributed its smaller values; append this node before the larger right subtree.
         self.nodes_val.append(node.val)
 
-        # Choose this path when `node.right is not None` is true.
         if node.right is not None:
             self.dfs(node.right)
 

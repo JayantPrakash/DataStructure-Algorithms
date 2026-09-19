@@ -1,45 +1,41 @@
-# Key idea: Trace the queue one breadth-first level at a time.
 # Definition for a binary tree node.
 from typing import List, Optional
 from collections import deque
 
-# Group the state and operations used by the binary tree level order traversal implementation.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
-# Group the state and operations used by the binary tree level order traversal implementation.
 class Solution:
-    # Compute or update the level order result for the supplied input.
+    # A FIFO queue groups nodes by depth while preserving left-to-right order.
+    # O(n) time, O(w) frontier space, and O(n) output storage.
     def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
         result = []
-        # Choose this path when `root is None` is true.
         if root is None:
             return result
         q = deque()
         q.append(root)
         len_q = len(q)
 
-        # Keep processing while `len(q) != 0` remains true.
+        # At each outer-loop entry, the queue contains precisely the next level to process.
         while len(q) != 0:
             len_q = len(q)
             temp = []
 
-            # Process each value from `range(len_q)`.
+            # Freeze the level size before adding children; those new entries must wait for the next batch.
             for _ in range(len_q):
                 node = q.popleft()
                 temp.append(node.val)
 
-                # Choose this path when `node.left is not None` is true.
+                # Enqueue left before right so the next level's values retain their horizontal order.
                 if node.left is not None:
                     q.append(node.left)
 
-                # Choose this path when `node.right is not None` is true.
                 if node.right is not None:
                     q.append(node.right)
 
+            # One completed batch becomes one output row.
             result.append(temp)
         return result       
 

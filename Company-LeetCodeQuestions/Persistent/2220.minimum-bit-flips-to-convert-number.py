@@ -1,13 +1,12 @@
-# Key idea: Follow how inputs are transformed into the returned result or updated data structure.
-# Group the state and operations used by the minimum bit flips to convert number implementation.
 class Solution:
-    # Compute or update the min bit flips result for the supplied input.
+    # Each differing bit needs exactly one flip; count mismatches between aligned binary representations.
+    # This is the same concept as counting set bits in start XOR goal, implemented here with strings.
     def minBitFlips(self, start: int, goal: int) -> int:
 
-        # Compute or update the convert bits result for the supplied input.
+        # Repeated division emits bits least-significant first, so the resulting string is reversed binary.
+        # Assumes nonnegative, modest-sized integers; int(num / 2) uses floating-point division.
         def convert_bits(num):
             bits = ""
-            # Keep processing while `num != 0` remains true.
             while num != 0:
                 quotient = int(num/2)
                 remainder = int(num %2 !=0)
@@ -20,7 +19,7 @@ class Solution:
 
         len_bit_start = len(bits_start)
         len_bit_goal = len(bits_goal)
-        # Choose this path when `len_bit_start > len_bit_goal` is true.
+        # Pad on the right because these strings store low-order bits first; absent high bits are zero.
         if len_bit_start > len_bit_goal:
             bits_goal += "0"*(len_bit_start - len_bit_goal)
         else:
@@ -29,9 +28,8 @@ class Solution:
         
         print(bits_start, bits_goal)    
         min_change = 0
-        # Process each value from `range(len(bits_start))`.
         for i in range(len(bits_start)):
-            # Choose this path when `bits_start[i] != bits_goal[i]` is true.
+            # Each mismatch is independent: fixing one bit does not affect any other position.
             if bits_start[i] != bits_goal[i]:
                 min_change += 1
         
