@@ -1,18 +1,15 @@
-# Key idea: Trace the queue one breadth-first level at a time.
 # Definition for a binary tree node.
 from typing import List, Optional
 from collections import deque
 
 # Represents one node in a binary tree.
 class TreeNode:
-    # Initialize the state needed by a new instance.
     def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
 
 
-# Group the state and operations used by the bfs implementation.
 class Solution:
     # Traverse the tree level by level using breadth-first search (BFS).
     def bfs(self, root: Optional[TreeNode]) -> List[List[int]]:
@@ -28,7 +25,8 @@ class Solution:
 
         # Continue until every reachable node has been processed.
         while len(q) != 0:
-            # Remove the oldest node so nodes are processed from left to right.
+            # Remove the oldest node so nodes are processed 
+            # from left to right.
             node = q.popleft()
             result.append(node.val)
 
